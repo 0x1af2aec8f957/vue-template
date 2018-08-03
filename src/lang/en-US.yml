@@ -1,0 +1,52 @@
+# 配置文件语法参考：http://www.ruanyifeng.com/blog/2016/07/yaml.html
+btnText:
+  - 'Confirm'
+  - 'Cancel'
+  - 'Submit'
+  - 'Resend'
+  - 'Add'
+  - 'Send'
+  - 'Copy'
+btnStatus:
+  - 'Hold on'
+statusMessage:
+  - 'Success'
+  - 'Failed'
+  - 'Unknown result'
+  - 'Set Successfully'
+  - '{time}S Have been sent'
+  - 'Copy Successfully'
+  - 'Invalid Input'
+  - 'Saved successfully'
+  - 'Saved failed'
+  - 'Unverified'
+  - 'Unknown Level'
+  - 'Wrong Verification Code'
+xhrError:
+  - 'Please Login'
+  - '{code} login timeout'
+label:
+  - 'Phone Number'
+  - 'Name'
+  - 'Verification Code'
+agencyStatus:
+  - 'Unregistered'
+  - 'Unverified'
+  - 'Have been invited'
+  - 'Invite'
+  - 'Edit'
+  - 'Not Be Defined'
+levelDiff:
+  - 'Directly'
+  - 'Indirectly'
+  - 'Unknown'
+timeLabel:
+  - 'Year'
+  - 'Month'
+  - 'Day'
+  - 'Hour'
+  - 'Minute'
+  - 'Second'
+html:
+  rule: |-
+    <div class="rule-wrap background-box overflow-y"></div>

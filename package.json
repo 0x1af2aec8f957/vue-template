@@ -1,0 +1,109 @@
+{
+  "name": "vue-template",
+  "realmName": "https://oss.noteScript.app",
+  "version": "0.0.1",
+  "private": true,
+  "homepage": ".",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "oss.build": "isOss=true vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5",
+    "@fortawesome/fontawesome-svg-core": "^1.2.18",
+    "@fortawesome/free-solid-svg-icons": "^5.8.2",
+    "@fortawesome/vue-fontawesome": "^0.1.6",
+    "axios": "^0.18.0",
+    "cookies-js": "^1.2.3",
+    "echarts": "^4.2.1",
+    "joi-browser": "^13.4.0",
+    "md5": "^2.2.1",
+    "moment": "^2.24.0",
+    "mqtt": "^3.0.0",
+    "qrcode": "git://github.com/noteScript/qrcodejs.git#master",
+    "tradingview": "git://github.com/noteScript/tradingview.git#master",
+    "vue": "^2.6.6",
+    "vue-router": "^3.0.1",
+    "vue-i18n": "^8.12.0",
+    "vuex": "^3.0.1",
+    "zxcvbn": "^4.4.2"
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-decorators": "^7.4.4",
+    "@babel/plugin-proposal-do-expressions": "^7.2.0",
+    "@babel/plugin-proposal-function-bind": "^7.2.0",
+    "@babel/plugin-proposal-optional-chaining": "^7.2.0",
+    "@babel/plugin-proposal-partial-application": "^7.4.4",
+    "@babel/plugin-proposal-pipeline-operator": "^7.3.2",
+    "@kazupon/vue-i18n-loader": "^0.3.0",
+    "eslint-plugin-vue-i18n": "^0.1.1",
+    "@vue/cli-plugin-babel": "^3.5.0",
+    "@vue/cli-plugin-eslint": "^3.5.0",
+    "@vue/cli-service": "^3.5.2",
+    "@vue/eslint-config-airbnb": "^4.0.0",
+    "babel-eslint": "^10.0.1",
+    "compression-webpack-plugin": "^3.0.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-vue": "^5.2.2",
+    "fibers": "^4.0.1",
+    "json-loader": "^0.5.7",
+    "lint-staged": "^8.1.4",
+    "postcss-pxtorem": "^4.0.1",
+    "reepack": "^1.0.2",
+    "sass": "^1.17.2",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.5.21",
+    "yaml-loader": "^0.5.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "plugin:vue-i18n/recommended",
+      "@vue/airbnb"
+    ],
+    "rules": {
+      "vue-i18n/no-dynamic-keys": "error",
+      "vue-i18n/no-unused-keys": ["error", {
+        "extensions": [".js", ".vue"]
+      }],
+      "max-len": [
+        1,
+        500
+      ]
+    },
+    "settings": {
+      "vue-i18n": {
+        "localeDir": "./path/to/locales/*.yml"
+      }
+    },
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ],
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
+  }
+}

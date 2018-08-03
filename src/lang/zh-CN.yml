@@ -1,0 +1,103 @@
+# 配置文件语法参考：http://www.ruanyifeng.com/blog/2016/07/yaml.html
+btnText:
+  - 确定
+  - 取消
+  - 提交
+  - 重新发送
+  - 添加
+  - 获取验证码
+  - 复制
+btnStatus:
+  - 请稍等
+statusMessage:
+  - 成功
+  - 失败
+  - 未知结果
+  - 设置成功
+  - '已发送{time}S'
+  - 复制成功
+  - 输入信息无效
+  - 保存成功
+  - 保存失败
+  - 未实名
+  - 未知等级
+  - 验证码输入有误
+xhrError:
+  - 请登录
+  - '{code} 登录超时'
+label:
+  - 手机号
+  - 姓名
+  - 验证码
+agencyStatus:
+  - 未注册
+  - 未实名
+  - 已被邀请
+  - 邀请
+  - 编辑
+  - 尚未定义
+levelDiff:
+  - 直接
+  - 间接
+  - 未知
+timeLabel:
+  - 年
+  - 月
+  - 日
+  - 时
+  - 分
+  - 秒
+html:
+  rule: |-
+    <div class="rule-wrap background-box overflow-y">
+        <div class="c-1"><!--<h1 class="text-center">4A合伙人计划</h1>--></div>
+        <div class="c-2"><h2 class="text-center">【规则说明】</h2></div>
+        <div class="c-3">
+          <div class="c-3-wrap">
+            <div class="align-center">
+              <p class="rule-line"><span></span><span></span><span></span></p>
+              <h3>邀请规则说明</h3>
+              <p class="rule-line"><span></span><span></span><span></span></p>
+            </div>
+
+            <div class="c-3-1">
+              <p>● VIP-A可搜索平台用户，经用户同意后，通过手机验证码进行关系添加</p>
+              <p>● VIP-B以及其他VIP均通过向他人发放定制化的二维码海报，扫码添加关系，关系一旦绑定不可更改</p>
+            </div>
+          </div>
+        </div>
+        <div class="c-3">
+          <div class="c-3-wrap">
+            <div class="align-center">
+              <p class="rule-line"><span></span><span></span><span></span></p>
+              <h3 class="margin-double">合伙人权益</h3>
+              <p class="rule-line"><span></span><span></span><span></span></p>
+            </div>
+
+            <div class="c-3-1">
+              <p>● 平台手续费减免</p>
+              <p>● 公司定期培训、学习</p>
+              <p>● 官方授牌、授书</p>
+              <p>● 享受充、提币绿色通道</p>
+              <p>● 享受平台1对1专属商务、客服服务</p>
+              <p>● 可代表社群参观、考察平台所有公司、团队、生态等</p>
+              <p>● 每年至少一次与公司创始人团队闭门会议</p>
+              <p>● 享受平台分红</p>
+            </div>
+          </div>
+        </div>
+        <div class="c-3">
+          <div class="c-3-wrap">
+            <div class="align-center">
+              <p class="rule-line"><span></span><span></span><span></span></p>
+              <h3>收益发放时间</h3>
+              <p class="rule-line"><span></span><span></span><span></span></p>
+            </div>
+
+            <div class="c-3-1">
+              <p>● 按周进行收益发放，到账时间一般在次周的第一个自然日12:00前到账</p>
+            </div>
+          </div>
+        </div>
+        <div class="c-4 text-center"><p>— 4A合伙人计划详情请咨询官方客服 —</p></div>
+      </div>

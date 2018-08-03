@@ -1,0 +1,3 @@
+xhrError:
+  - 'Please Login'
+  - '{code} login timeout'

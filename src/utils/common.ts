@@ -256,7 +256,7 @@ export function debounceFunc(fn: (...arg: any[]) => any, time: number = 500): Re
     };
 }
 
-function throttleFunc(fn: (...arg: any[]) => any, time: number = 500): ReturnType<any> { // 截流
+export function throttleFunc(fn: (...arg: any[]) => any, time: number = 500): ReturnType<any> { // 截流
     let canRun: boolean = true; // 通过闭包保存一个标记
     return (...arg: any[]): void => {
         if (!canRun) return; // 在函数开头判断标记是否为true，不为true则return

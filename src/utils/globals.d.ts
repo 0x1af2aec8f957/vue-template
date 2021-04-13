@@ -12,7 +12,7 @@ type PromiseInnerType<T extends Promise<any>> = T extends Promise<infer P> ? P :
  * ReturnType的Promise版本
  * example: PromiseReturnType<typeof ()=> Promise<string>> -> string
  */
-type PromiseReturnType<T extends () => any> = ReturnType<T> extends Promise<infer R> ? R : ReturnType<T>;
+type PromiseReturnType<T extends (...rest: any[]) => any> = ReturnType<T> extends Promise<infer R> ? R : ReturnType<T>;
 // type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;
 
 /**

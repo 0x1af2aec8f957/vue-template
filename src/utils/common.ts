@@ -180,10 +180,12 @@ export function recursionFilterItemKey<T extends object>( // 筛选key，剔除�
     array: {[name in string]: any}[], // 需要处理的数组
     key: string = 'children', // 包含子数据的key
     filters: {[key in string]?: string}, // 需要筛选的数组项key映射, 该对象的key为当前数组的属性, value为要变更的属性名(为undefined仅筛选不变更，映射生成多个key可以使用逗号分隔)
-    callback?: (key: string, value: any) => any // 自定义处理数据回调函数，可以修正原始数据的value
+    callback?: (key: string, value: any, item?: (typeof array)[number]) => any // 自定义处理数据回调函数，可以修正原始数据的value
 ): {[name in (keyof typeof filters | typeof key)]: any}[] | T[] {
     return array
         .map((item) => {
+            // const childrenAlias = typeof filters[key] === 'undefined' ? key : filters[key]?.split(',');
+            // if (childrenAlias) delete filters[key];
             const newItem = Object.entries(filters)
                 .reduce((acc, [_key, _value]) => ({
                     ...acc,
@@ -191,7 +193,7 @@ export function recursionFilterItemKey<T extends object>( // 筛选key，剔除�
                         .split(',') // 支持映射多个key
                         .reduce((shines, __key: string) => ({
                             ...shines,
-                            [__key]: typeof callback === 'undefined' ? item[_key] : callback(__key, item[_key])
+                            [__key]: typeof callback === 'undefined' ? item[_key] : callback(__key, item[_key], item)
                         }), Object.create(null))
                 }), Object.create(null)) as {[name in keyof typeof filters]: any};
 

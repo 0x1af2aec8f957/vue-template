@@ -4,6 +4,7 @@
   "ignoreFiles": ["node_modules/**/*.*", "build/**/*.*"],
   "rules": {
     "color-no-invalid-hex": true,
+    "no-descending-specificity": null,
     "font-family-no-missing-generic-family-keyword": [
       true,
       {

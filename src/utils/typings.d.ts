@@ -14,6 +14,13 @@ declare module '*.json' { // NOTE: 非ts-loader
     export default value;
 }
 
+declare module '*.svg' { // NOTE: vue-svg-loader
+    import { DefineComponent } from 'vue';
+
+    const component: DefineComponent;
+    export default component;
+}
+
 /* declare module '*.vue' { // NOTE: 非ts-loader
     // const value: WebpackContent;
     import Vue from 'vue';

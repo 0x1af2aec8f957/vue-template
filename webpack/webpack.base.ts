@@ -373,10 +373,10 @@ config.module // svg-loader
     /* .include
     .add(path.resolve(workDir, 'src'))
     .end() */
-    .use('svg-babel')
-    .loader('babel-loader')
+    .use('vue-loader')
+    .loader('vue-loader')
     .end()
-    .use('vue-svg')
+    .use('vue-svg-loader')
     .loader('vue-svg-loader')
     .end()
     .end();

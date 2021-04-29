@@ -14,13 +14,13 @@
     "selector-pseudo-element-no-unknown": [
       true,
       {
-        "ignorePseudoElements": ["v-deep"]
+        "ignorePseudoElements": ["v-deep", "v-slotted", "v-global"]
       }
     ],
     "selector-pseudo-class-no-unknown": [
       true,
       {
-        "ignorePseudoClasses": ["/^deep/"]
+        "ignorePseudoClasses": ["/^deep/", "/^global/", "/^slotted/"]
       }
     ]
   }

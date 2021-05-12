@@ -145,9 +145,9 @@ export function sliceLength(arr: any[], startIndex: number, length: number): any
     return arr.slice(startIndex, startIndex + length);
 }
 
-export function recursionAggregation<T extends object>( // 展开数据（类似Array.flat, 但支持子集），递归汇总提取key最底层相关的数据，支持上层直接忽略
+export function buildFlat<T extends object>( // 树状数据转扁平数据（类似Array.flat, 但支持子集），递归汇总提取key最底层相关的数据，支持上层直接忽略
     array: {[name in string]: any}[], // 需要处理的数组
-    key = 'contents', // 包含子数据的key
+    key = 'children', // 包含子数据的key
     isOnlyBottom = false, // 是否只获取最底层的数据
     callback?: (cur: T, next: T[]) => T[] // 自定义处理数据回调函数，如果需要在每层的筛选时向下传递某些字段会非常有用，返回一个新的数据结构
 ): {[name in string]: any}[] | T[] {
@@ -160,7 +160,7 @@ export function recursionAggregation<T extends object>( // 展开数据（类似
                 const newItem = JSON.parse(JSON.stringify(item)) as {[key in (typeof key | string)]: any} & T;
                 delete newItem[key];
 
-                const nextValues = recursionAggregation(
+                const nextValues = buildFlat(
                     hasCallback
                         ? (callback as Function)(newItem, <T[]>item[key]) // 返回的数据结会成为新的item[key]移交给地下一次递归处理
                         : <T[]>item[key],
@@ -176,7 +176,42 @@ export function recursionAggregation<T extends object>( // 展开数据（类似
         .flat();
 }
 
-export function recursionFilterItemKey<T extends object>( // 筛选key，剔除不必要的数组项其它属性（同时支持数据映射）
+function buildTree<T extends object>( // 扁平数组转树状结构
+    array: T[],
+    childrenKey: string = 'children', // 数据项的子集属性名称
+    key: string = 'id', // 数据项的主键属性名称
+    parentKey: string = 'parentId' // 数据项的父级主键属性名称
+): T[] {
+    type ArrayItem = {
+        [name in typeof key | typeof parentKey | typeof childrenKey]: string | any[]
+    };
+
+    type ArrayItemExtend = T & ArrayItem;
+
+    const newArray: T[] = [];
+    const tree = array.reduce((acc: {[name in keyof ArrayItemExtend]: any}, cur: T) => { // 数组转换后的对象
+        const currentValue = cur as T & ArrayItemExtend;
+        return {
+            ...acc,
+            [currentValue[key as keyof ArrayItem] as string]: cur
+        };
+    }, Object.create(null)) as {[name in typeof key | typeof parentKey]: ArrayItemExtend};
+
+    (Object.values(tree) as T[]).forEach((item) => {
+        const _parentValue = (item as ArrayItemExtend)[parentKey as keyof ArrayItem]; // 父级对象的值
+        if (_parentValue) { // 插入children数组
+            if (typeof (tree[_parentValue as keyof ArrayItemExtend as string])[childrenKey] === 'undefined') ((tree[_parentValue as keyof ArrayItemExtend as string])[childrenKey] as T[]) = [];
+            ((tree[_parentValue as keyof ArrayItemExtend as string])[childrenKey] as T[]).push(item);
+            return;
+        }
+
+        newArray.push(item); // 放进新的数组中
+    });
+
+    return newArray;
+}
+
+export function makeFilterItemKey<T extends object>( // 筛选key，剔除不必要的数组项其它属性（同时支持数据映射）
     array: {[name in string]: any}[], // 需要处理的数组
     key: string = 'children', // 包含子数据的key
     filters: {[key in string]?: string}, // 需要筛选的数组项key映射, 该对象的key为当前数组的属性, value为要变更的属性名(为undefined仅筛选不变更，映射生成多个key可以使用逗号分隔)
@@ -184,8 +219,6 @@ export function recursionFilterItemKey<T extends object>( // 筛选key，剔除�
 ): {[name in (keyof typeof filters | typeof key)]: any}[] | T[] {
     return array
         .map((item) => {
-            // const childrenAlias = typeof filters[key] === 'undefined' ? key : filters[key]?.split(',');
-            // if (childrenAlias) delete filters[key];
             const newItem = Object.entries(filters)
                 .reduce((acc, [_key, _value]) => ({
                     ...acc,
@@ -200,7 +233,7 @@ export function recursionFilterItemKey<T extends object>( // 筛选key，剔除�
             if (typeOf(item[key]) !== 'array') return newItem;
             return {
                 ...newItem,
-                [filters[key] ?? key]: recursionFilterItemKey(item[key], key, filters, callback)
+                [filters[key] ?? key]: makeFilterItemKey(item[key], key, filters, callback)
             };
         });
 }
@@ -211,7 +244,7 @@ export function recursionFind<T extends object>( // 同Array.find方法，支持
     callback: (value: T, index: number, obj: T[]) => boolean, // Array.find回调函数
     hasChildren: boolean = false // 找到的数据是否包含子集
 ): T | undefined { // 数组递归查找
-    if (!hasChildren) return (recursionAggregation<T>(array, key, false) as T[]).find(callback);
+    if (!hasChildren) return (buildFlat<T>(array, key, false) as T[]).find(callback);
 
     // eslint-disable-next-line no-restricted-syntax
     for (const [
@@ -229,13 +262,13 @@ export function recursionFind<T extends object>( // 同Array.find方法，支持
     }
 }
 
-export function recursionFilterUnique<T extends {[key: string]: any}>( // 数组去重,支持递归去重
+export function makeFilterUnique<T extends {[key: string]: any}>( // 数组去重,支持递归去重
     array: T[], // 需要处理的数组
     filterKey: string, // 筛选的key
     key: string = 'children' // 包含子数据的key
 ): T[] {
     return Object.values(
-        (recursionAggregation<T>(array, key, false) as T[])
+        (buildFlat<T>(array, key, false) as T[])
             .reduce((acc, cur) => Object.assign(acc, { [cur[filterKey]]: cur }), Object.create(null))
     );
 }

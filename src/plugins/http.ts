@@ -1,4 +1,4 @@
-import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSource, Canceler } from 'axios';
 
 import http from 'axios'; /// doc: https://github.com/axios/axios#axios-api
 import moment from 'moment'; /// doc: https://momentjs.com/docs
@@ -8,7 +8,7 @@ import i18n from '../setup/i18n-setup';
 import router from '../setup/router-setup';
 import { typeOf, deepCopy } from '../utils/common';
 
-export { AxiosInstance };
+export type { AxiosInstance };
 
 enum AcceptType {
     Json = 'application/json ',
@@ -94,7 +94,29 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
     return instance;
 }
 
-// TODO: 待实现类似React.hook方法用于取消当前正在进行的接口操作;[https://github.com/axios/axios#cancellation]
+/**
+ * 根据配置创建一个Axios实例，该实例支持取消
+ *
+ * @param uri String Axios中的baseURL参数
+ * @return [AxiosInstance, Canceler] 返回一个元组；该元组头部为初始化好的Axios实例，尾部为取消当前实例请求的方法
+ */
+export function useHttp(uri: string): [AxiosInstance, Canceler] {
+    const { CancelToken } = http;
+    const { baseURL = uri, timeout, headers } = xhrDefaultConfig;
+    const source: CancelTokenSource = CancelToken.source();
+
+    return [
+        httpInit(
+            http.create({
+                baseURL,
+                timeout,
+                headers,
+                cancelToken: source.token
+            })
+        ),
+        source.cancel
+    ];
+}
 
 export default typeof Proxy === 'undefined' ? {
     instance: (uri: string): AxiosInstance => {

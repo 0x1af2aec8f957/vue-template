@@ -95,6 +95,30 @@ function httpInit(instance) {
   return instance;
 }
 
+/**
+ * 根据配置创建一个Axios实例，该实例支持取消
+ *
+ * @param uri String Axios中的baseURL参数
+ * @return [AxiosInstance, Canceler] 返回一个元组；该元组头部为初始化好的Axios实例，尾部为取消当前实例请求的方法
+ */
+export function useHttp(uri: string) {
+    const { CancelToken } = http;
+    const { baseURL = uri, timeout, headers } = xhrDefaultConfig;
+    const source = CancelToken.source();
+
+    return [
+        httpInit(
+            http.create({
+                baseURL,
+                timeout,
+                headers,
+                cancelToken: source.token
+            })
+        ),
+        source.cancel
+    ];
+}
+
 export default typeof Proxy === 'undefined' ? {
   instance: (uri) => {
     const { baseURL = uri, timeout } = xhrDefaultConfig;

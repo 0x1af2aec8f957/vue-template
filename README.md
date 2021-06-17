@@ -74,3 +74,7 @@
 + eslint
     1. [eslint-vue](https://eslint.vuejs.org)
     2. [airbnb-base](https://github.com/airbnb/javascript)
+
+##### 已知的问题
+
+1. [stylelint-webpack-plugin·V2.2.0](https://github.com/webpack-contrib/stylelint-webpack-plugin/issues/234#issue-922440555) Build将需要更长时间（可能长达数十分钟，请勿轻易升级）的等待。

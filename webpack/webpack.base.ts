@@ -537,6 +537,7 @@ config // 插件项
     .end()
     .plugin('stylelint')
     .use(StyleLintPlugin, [{
+        threads: true, // 线程池自动
         files: '**/*.(vue|htm|html|css|style|styl|less|(s(c|a)ss))', // 检测的文件扩展名称
         fix: true // 自动修复错误
         // lintDirtyModulesOnly: true,

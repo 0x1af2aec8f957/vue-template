@@ -233,7 +233,7 @@ export function makeFilterItemKey<T extends object>( // 筛选key，剔除不必
             if (typeOf(item[key]) !== 'array') return newItem;
             return {
                 ...newItem,
-                [filters[key] ?? key]: makeFilterItemKey(item[key], key, filters, callback)
+                [key]: makeFilterItemKey(item[key], key, filters, callback)
             };
         });
 }

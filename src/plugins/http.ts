@@ -11,7 +11,7 @@ import { typeOf, deepCopy } from '../utils/common';
 export type { AxiosInstance };
 
 enum AcceptType {
-    Json = 'application/json ',
+    Json = 'application/json',
     Plain = 'ext/plain',
     Multipart = 'application/x-www-form-urlencoded'
 }

@@ -218,7 +218,7 @@ function createCSSRule(lang: string, test: RegExp, loader?: string, options?: Co
                     + (isProduction ? 1 : 0)
                 ),
                 modules: {
-                    compileType: 'module',
+                    // compileType: 'module', // css-loader >= 6.0.0, 使用mode设置即可
                     mode: isLocal ? 'local' : 'global',
                     localIdentName: '[local]_[hash:base64:8]'
                 },
@@ -539,7 +539,8 @@ config // 插件项
     .use(StyleLintPlugin, [{
         threads: true, // 线程池自动
         files: '**/*.(vue|htm|html|css|style|styl|less|(s(c|a)ss))', // 检测的文件扩展名称
-        fix: true // 自动修复错误
+        fix: true, // 自动修复错误
+        customSyntax: 'stylelint-plugin-stylus/custom-syntax' // 自定义支持stylus语法解析
         // lintDirtyModulesOnly: true,
         // exclude: 'node_modules'
     }])

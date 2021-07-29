@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import type { VueMessageType } from 'vue-i18n';
-import type { LocaleMessages } from '@intlify/core-base';
-import type { Locale, FallbackLocale } from '@intlify/runtime';
+import type { LocaleMessages, Locale, FallbackLocale } from '@intlify/core-base';
 
 import { createI18n } from 'vue-i18n';
 
@@ -10,19 +9,23 @@ import http from '../plugins/http';
 import en_US from '../lang/en-US.yml';
 import zh_CN from '../lang/zh-CN.yml';
 
+type MessageSchema = typeof en_US | typeof zh_CN;
+
 const isProduction: boolean = process.env.NODE_ENV === 'production';
 const localeDefault: string = window.navigator.language;
 
-const messages: LocaleMessages<VueMessageType> = { // 语言包
+const messages: {
+    [key in 'en-US' | 'zh-CN']: MessageSchema
+} = { // 语言包
     'en-US': en_US,
     'zh-CN': zh_CN
 };
 
 const languages: Locale[] = Object.keys(messages);
 
-const fallbackLocale: Locale/* FallbackLocale */ = languages.includes(localeDefault)
+const fallbackLocale/* FallbackLocale */ = (languages.includes(localeDefault)
     ? localeDefault
-    : languages.find((lan: string) => lan.indexOf(localeDefault.split('-')[0]) > -1) ?? localeDefault;
+    : languages.find((lan: string) => lan.indexOf(localeDefault.split('-')[0]) > -1) ?? localeDefault) as keyof typeof messages;
 
 const i18n = createI18n({
     locale: fallbackLocale, // 设置语言环境
@@ -31,7 +34,9 @@ const i18n = createI18n({
     messages // 设置语言环境信息
 });
 
-export function setI18nLanguage(lang: Locale = fallbackLocale): Locale { // 设置规则：完全匹配 -> 模糊匹配 -> 默认语言
+export type LangKeyString = typeof fallbackLocale;
+
+export function setI18nLanguage(lang: LangKeyString = fallbackLocale): Locale { // 设置规则：完全匹配 -> 模糊匹配 -> 默认语言
     const { global: { locale, availableLocales } } = i18n;
 
     if (locale === lang) return lang; // 不允许重复设置语言

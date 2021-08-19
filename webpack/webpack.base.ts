@@ -596,7 +596,9 @@ config // 插件项
             }])
         .end() */
     .plugin('moment-locales-plugin') // moment-locale: https://github.com/iamakulov/moment-locales-webpack-plugin#usage
-    .use(MomentLocalesPlugin)
+    .use(MomentLocalesPlugin, [{ // moment需要抽取的语言要在这里列出，否则会导致国际化不完善的情况
+        localesToKeep: ['es-us', 'zh-cn']
+    }])
     .end()
     .plugin('define-plugin')
     .use(DefinePlugin, [{

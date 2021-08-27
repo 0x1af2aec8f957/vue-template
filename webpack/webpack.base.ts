@@ -22,6 +22,7 @@ import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import ESLintPlugin from 'eslint-webpack-plugin'; // NOTE: 不需要和ForkTsCheckerWebpackPlugin重复使用
 import StyleLintPlugin from 'stylelint-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 
 const packageInfo = require('../package.json');
 const httpProxy = require('./webpack.proxy');
@@ -649,6 +650,17 @@ config.devServer // doc: https://github.com/chimurai/http-proxy-middleware#proxy
 
 config.optimization // 构建与打包优化项  /// doc: https://webpack.js.org/configuration/optimization/
     .minimize(isProduction)
+    .minimizer('terser-webpack-plugin') // js代码压缩
+    .use(TerserPlugin, [{ /// doc: https://github.com/terser/terser#minify-options
+        parallel: true, // 并发构建
+        terserOptions: { // Terser 压缩配置
+            format: { /// doc: https://github.com/terser/terser#format-options
+                comments: isDevelopment || /@license/i, // 剥离所有有效的注释（即 /^\**!|@preserve|@license|@cc_on/i ）并保留 /@license/i 注释
+              },
+        },
+        extractComments: true, // 是否剥离注释（删除注释使用false）
+    }])
+    .end()
     .splitChunks(/* <webpack.Options.SplitChunksOptions> */{ // 代码分割及性能优化
         chunks: 'all',
         minSize: 30000,

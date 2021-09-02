@@ -30,7 +30,7 @@ const proxy: DevServerProxy = {
             const response = responseBuffer.toString('utf8'); // 从代理目标获取到的数据
             const result = JSON.parse(response); // 数据源解析成JSON格式
 
-            if (result.respCode === '403') { // 登录凭证过期
+            if (result.code === '403') { // 登录凭证过期
                 await axios.post(`${certificatePaylod.get('domain')}/login`, { // 处理自动授权登录并保存访问凭证
                     userName: 'example@examplecom',
                     password: 'example'

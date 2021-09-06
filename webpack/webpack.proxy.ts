@@ -20,7 +20,7 @@ const proxy: DevServerProxy = {
             '^/': '', // rewrite...
         }, */
         selfHandleResponse: true, // 开启拦截来自上游的响应 responseInterceptor
-        onProxyReq(proxyReq, req: http.IncomingMessage, res: http.ServerResponse) {
+        onProxyReq(proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse) {
             // add custom header to request
             certificatePaylod.set('domain', `${proxyReq.protocol}//${proxyReq.host}`/* 代理配置中的 target 属性值 */); // 设置许可域
             if (certificatePaylod.has('token')) proxyReq.setHeader('token', certificatePaylod.get('token')); // 如果 certificatePaylod 存在 token 则自动写入header

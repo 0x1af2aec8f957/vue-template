@@ -20,7 +20,7 @@ function fetchFile(_path: string = __dirname, reg: RegExp = /[\S\s]/): string[] 
 }
 
 // mock module export
-module.exports = function mockModule(app: express.Application): void {
+module.exports = function mockModule(devServer: {app: express.Application}): void {
     // mock module import...
     const modules: string[] = fetchFile(__dirname, /\.(js|ts)$/);
 
@@ -29,6 +29,6 @@ module.exports = function mockModule(app: express.Application): void {
         // eslint-disable-next-line import/no-dynamic-require
         const mockInstance: (app: express.Application) => void = require(module);
 
-        mockInstance.call(Object.create(null), app/* , server, compiler */);
+        mockInstance.call(Object.create(null), devServer.app/* , server, compiler */);
     });
 };

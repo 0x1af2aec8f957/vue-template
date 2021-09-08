@@ -7,7 +7,7 @@ import * as process from 'process';
 import * as fs from 'fs';
 import * as url from 'url';
 import * as Dotenv from 'dotenv';
-import { DefinePlugin, BannerPlugin, ProvidePlugin, HotModuleReplacementPlugin } from 'webpack';
+import { DefinePlugin, BannerPlugin, ProvidePlugin } from 'webpack';
 import Config, { LoaderOptions } from 'webpack-chain';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WebpackBar from 'webpackbar';
@@ -17,7 +17,6 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CompressionPlugin from 'compression-webpack-plugin';
 import MomentLocalesPlugin from 'moment-locales-webpack-plugin';
 import * as Handlebars from 'handlebars';
-import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import ESLintPlugin from 'eslint-webpack-plugin'; // NOTE: 不需要和ForkTsCheckerWebpackPlugin重复使用
@@ -57,7 +56,7 @@ const envVariable = { // 工作区注入的环境变量
 /// <reference path="html-webpack-plugin/typings.d.ts" />
 const htmlWebpackOptions: HtmlWebpackType.ProcessedOptions = { // doc: https://github.com/jantimon/html-webpack-plugin#options
     publicPath: 'auto',
-    title: 'vue-template',
+    title: projectName,
     filename: 'index.html',
     template: path.join(workDir, 'public', 'index.html'),
     templateContent: false,
@@ -76,12 +75,13 @@ const htmlWebpackOptions: HtmlWebpackType.ProcessedOptions = { // doc: https://g
     excludeChunks: [],
     xhtml: true,
     compile: true,
-    inlineSource: '.(js|css)'
-    // environment: process.env
+    inlineSource: '.(js|css)',
+    environment: process.env
 };
 
 config
     .mode(ENV)
+    .cache(true)
     .name(packageInfo.name)
     .stats({
         assets: false,
@@ -95,8 +95,10 @@ config
     .add(path.resolve(workDir, 'src', 'main.ts'))
     .end()
     .output // 出口
+    .clean(true)
     .path(path.resolve(workDir, projectName))
-    .filename(isDevelopment ? 'js/[name].js' : 'js/[name].[hash:8].js')
+    .filename(isDevelopment ? 'js/[name].js' : 'js/[name].[chunkhash:8].js')
+    .assetModuleFilename(isDevelopment ? 'asset/[name][ext]' : 'asset/[name].[contenthash:8][ext][query]') /// doc: https://webpack.js.org/configuration/output/#outputassetmodulefilename
     .publicPath(publicPath) // '单域名多项目'支持需要引入process.env.BASE_URL便于后续使用，单域名多项目不需要处理
     .end();
 
@@ -108,7 +110,7 @@ config
             // 开启 CSS Modules
             modules: true,
             // 自定义生成的类名
-            localIdentName: '[local]_[hash:base64:8]'
+            localIdentName: '[local]_[contenthash:base64:8]'
         };
 
 config.module // css-loader
@@ -156,7 +158,6 @@ config.module // less-loader
                 .end()
             .end();
 
-// @ts-ignore
 config.module // sass-loader
     .rule('sass')
         .test(/\.s[ac]ss$/i)
@@ -220,7 +221,7 @@ function createCSSRule(lang: string, test: RegExp, loader?: string, options?: Co
                 modules: {
                     // compileType: 'module', // css-loader >= 6.0.0, 使用mode设置即可
                     mode: isLocal ? 'local' : 'global',
-                    localIdentName: '[local]_[hash:base64:8]'
+                    localIdentName: '[local]_[contenthash:base64:8]'
                 },
                 sourceMap: isDevelopment
             })
@@ -277,10 +278,6 @@ createCSSRule('stylus', /\.styl(us)?$/, 'stylus-loader', { // stylus-loader
 config.module // vue-loader
     .rule('vue')
     .test(/\.vue$/)
-    .use('cache-loader') // TODO webpack5已自带，但webpack-chain尚未支持
-    .loader(require.resolve('cache-loader'))
-    // .options(vueLoaderCacheConfig)
-    .end()
     .use('thread')
     .loader('thread-loader')
     .end()
@@ -321,9 +318,6 @@ config.module // js-loader
     .end() */
     .use('thread')
     .loader('thread-loader')
-    .end()
-    .use('cache') // TODO webpack5已自带，但webpack-chain尚未支持
-    .loader('cache-loader')
     .end()
     .use('babel')
     .loader('babel-loader')
@@ -367,88 +361,66 @@ config.module // worker-loader
     .end()
     .end();
 
-config.module // svg-loader
-    .rule('svg')
+
+config.module /// asset-module, doc: https://webpack.js.org/guides/asset-modules
+    .rule('svg') // asset-svg
     .test(/\.svg$/)
     /* .include
     .add(path.resolve(workDir, 'src'))
     .end() */
-    .use('vue-loader')
-    .loader('vue-loader')
+    .type('asset/inline')
     .end()
-    .use('vue-svg-loader')
-    .loader('vue-svg-loader')
-    .end()
-    .end();
-
-config.module // html-loader
-    .rule('html')
+    .rule('html') // asset-html
     .test(/\.html$/)
-    .use('html')
-    .loader('html-loader')
-    .options({
-        minimize: true,
-        // attributes: false,
-        preprocessor(content: string, loaderContext: { emitError: (arg0: any) => any }) : string { // 预处理
+    .exclude
+    .add(path.resolve(workDir, 'public')) // 排除 public 中的 html 模板加载
+    .end()
+    .type('asset/resource')
+    .parser({
+        parse: (content: string) => { // 解析
             /// doc: https://webpack.js.org/loaders/html-loader/#preprocessor
             try {
                 return Handlebars.compile(content)(envVariable);
             } catch (error) {
-                loaderContext.emitError(error);
                 return content;
             }
-        }
+        },
     })
     .end()
-    .end();
-
-config.module // image-loader
-    .rule('image')
+    .rule('image') // asset-image
     .test(/\.(png|jpe?g|gif|bmp)$/)
     /* .include
     .add(path.resolve(workDir, 'src'))
     .end() */
-    .use('image') // TODO 等待webpack-chain适应webpack5完成，当前无法使用type配置应用到webpack的assets内置模块
-    .loader('url-loader')
-    .options({
-        limit: 1024, // 小于1k将图片转换成base64
-        name: '[name].[hash:8].[ext]',
-        outputPath: !isProduction ? './' : './images',
-        esModule: false
+    .type('asset')
+    .parser({
+        dataUrlCondition: {
+            maxSize: 1 * 1024 // 1kb, 小于 1kb 的文件，将会视为 inline 模块类型，否则会被视为 resource 模块类型
+        }
     })
     .end()
-    .end();
-
-config.module // video-loader
-    .rule('video')
+    .rule('video') // asset-video
     .test(/\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/)
     /* .include
     .add(path.resolve(workDir, 'src'))
     .end() */
-    .use('video')
-    .loader('url-loader')
-    .options({
-        limit: 1024, // 小于1k将图片转换成base64
-        name: '[name].[hash:8].[ext]',
-        outputPath: !isProduction ? './' : './videos',
-        esModule: false
+    .type('asset')
+    .parser({
+        dataUrlCondition: {
+            maxSize: 1 * 1024 // 1kb, 小于 1kb 的文件，将会视为 inline 模块类型，否则会被视为 resource 模块类型
+        }
     })
     .end()
-    .end();
-
-config.module // font-loader
-    .rule('font')
+    .rule('font') // asset-font
     .test(/\.(woff2?|eot|ttf|otf)(\?.*)?$/)
     /* .include
     .add(path.resolve(workDir, 'src'))
     .end() */
-    .use('font')
-    .loader('url-loader')
-    .options({
-        limit: 1024, // 小于1k将图片转换成base64
-        name: '[name].[hash:8].[ext]',
-        outputPath: !isProduction ? './' : './fonts',
-        esModule: false
+    .type('asset')
+    .parser({
+        dataUrlCondition: {
+            maxSize: 1 * 1024 // 1kb, 小于 1kb 的文件，将会视为 inline 模块类型，否则会被视为 resource 模块类型
+        }
     })
     .end()
     .end();
@@ -547,9 +519,6 @@ config // 插件项
         // exclude: 'node_modules'
     }])
     .end()
-    .plugin('clean-webpack-plugin') // https://github.com/johnagan/clean-webpack-plugin
-    .use(CleanWebpackPlugin) // TODO webpack5已自带clear功能，无需使用该插件但需要webpack-chain支持
-    .end()
     /* .plugin('bannerPlugin')
         .use(webpack.BannerPlugin, [`@m-cli ${TimeFn()}`])
         .end() */
@@ -632,17 +601,21 @@ config // 插件项
     .end()
     .end();
 
-config.devServer // doc: https://github.com/chimurai/http-proxy-middleware#proxycontext-config
+config.devServer /// doc: https://github.com/webpack/webpack-dev-server
+    // TODO 需要 webpack-chain 支持才能升级到4.x版本, 升级文档 https://github.com/webpack/webpack-dev-server/blob/master/migration-v4.md
     .hot(true)
-    .host('0.0.0.0')
-    // .port(9000)
+    .host('local-ip')
+    .port('auto')
     .historyApiFallback(true) // 效果等同于nginx: try_files $uri $uri/ /index.html;
     .open(true)
     .compress(true)
-    // .noInfo(false)
-    .useLocalIp(true)
-    .writeToDisk(false)
-    .before(serverBefore)
+    .client
+    .set('overlay', {
+        errors: true,
+        warnings: false
+    })
+    .end()
+    .onBeforeSetupMiddleware(serverBefore)  /// doc: https://github.com/chimurai/http-proxy-middleware#proxycontext-config
     .proxy(httpProxy)
     .end();
 // .clear();
@@ -652,6 +625,7 @@ config.devServer // doc: https://github.com/chimurai/http-proxy-middleware#proxy
 config.optimization // 构建与打包优化项  /// doc: https://webpack.js.org/configuration/optimization/
     .minimize(isProduction)
     .minimizer('terser-webpack-plugin') // js代码压缩
+    // @ts-ignore
     .use(TerserPlugin, [{ /// doc: https://github.com/terser/terser#minify-options
         parallel: true, // 并发构建
         terserOptions: { // Terser 压缩配置
@@ -710,14 +684,6 @@ config.when(
                 .end();
         }
 );
-
-// 开发环境使用HMR更新资产模块
-config.when(<boolean>isDevelopment, (config: Config) : void => {
-    config.plugin('hot-module-replacement-plugin')
-        .use(HotModuleReplacementPlugin)
-        .end()
-        .end();
-});
 
 webpackMerge(config); // XXX: 外部修改config基础配置，待优化
 

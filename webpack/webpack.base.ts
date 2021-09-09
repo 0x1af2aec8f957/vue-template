@@ -43,11 +43,13 @@ const {
     name: string
 } = packageInfo;
 
-const publicPath: string = url.resolve(realmName, isDevelopment ? './' : `${projectName}/`); // publicPath & url
+const publicPath: string = url.resolve(realmName, isDevelopment ? './' : `${projectName}/`); // publicPath & url, 资源引用前缀
+const outputPath: string = path.resolve(workDir, projectName); // webpack 打包输出目录
 
 const envVariable = { // 工作区注入的环境变量
-    BASE_URL: publicPath,
+    BASE_URL: isDevelopment? '/' : `/${projectName}`, /// 项目基准位置，doc: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
     VERSION: version,
+    NAME: projectName,
     ...Dotenv.parse(<string | Buffer>fs.readFileSync(path.join(workDir, '.env'))),
     ...isDevelopment && Dotenv.parse(<string | Buffer>fs.readFileSync(path.join(workDir, '.env.production'))),
     ...isProduction && Dotenv.parse(<string | Buffer>fs.readFileSync(path.join(workDir, '.env.development')))
@@ -76,7 +78,7 @@ const htmlWebpackOptions: HtmlWebpackType.ProcessedOptions = { // doc: https://g
     xhtml: true,
     compile: true,
     inlineSource: '.(js|css)',
-    environment: process.env
+    // environment: Object.assign({NAME: projectName}, process.env)
 };
 
 config
@@ -96,7 +98,7 @@ config
     .end()
     .output // 出口
     .clean(true)
-    .path(path.resolve(workDir, projectName))
+    .path(outputPath)
     .filename(isDevelopment ? 'js/[name].js' : 'js/[name].[chunkhash:8].js')
     .assetModuleFilename(isDevelopment ? 'asset/[name][ext]' : 'asset/[name].[contenthash:8][ext][query]') /// doc: https://webpack.js.org/configuration/output/#outputassetmodulefilename
     .publicPath(publicPath) // '单域名多项目'支持需要引入process.env.BASE_URL便于后续使用，单域名多项目不需要处理
@@ -536,9 +538,10 @@ config // 插件项
                     to: 'public',
                     globOptions: {
                         dot: true,
-                        gitignore: false, // FIXME: https://github.com/sindresorhus/globby/issues/145#issuecomment-666570212
+                        gitignore: true, // FIXME: https://github.com/sindresorhus/globby/issues/145#issuecomment-666570212
                         ignore: ['**/*.md', '**/index.html', 'favicon.ico']
-                    } }
+                    } 
+                }
                 // { from: path.resolve(workDir, `node_modules/vue/dist/vue${isProduction ? '.min' : ''}.js`), to: 'public' },
                 // { from: path.resolve(workDir, `node_modules/vuex/dist/vuex${isProduction ? '.min' : ''}.js`), to: 'public' },
                 // { from: path.resolve(workDir, `node_modules/vue-router/dist/vue-router${isProduction ? '.min' : ''}.js`), to: 'public' },

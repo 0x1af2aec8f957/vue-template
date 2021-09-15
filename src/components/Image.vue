@@ -3,7 +3,6 @@
     <div v-if="isSvg" class="image-preview" v-html="svgContentStr" :style="{ width: width, height: height }" ref="svgParentContainer"/> <!-- svg -->
     <img v-else class="image-preview" :src="src" :style="{ width: width, height: height }" /> <!-- image -->
 </template>
-
 <script lang="ts" setup>
 import { defineProps, computed, ref, onBeforeMount, nextTick } from 'vue';
 import axios from 'axios';
@@ -42,15 +41,15 @@ onBeforeMount(() => {
     }
 });
 </script>
-
 <style scoped lang="scss">
 .image-preview {
-  overflow: hidden;
+  overflow: visible;
   background-color: transparent;
   margin: 0;
   padding: 0;
   border: 0;
   outline: 0;
+  vertical-align: inherit;
 
   :deep(svg) {
     width: 100%;

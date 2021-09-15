@@ -3,8 +3,9 @@
     <div v-if="isSvg" class="image-preview" v-html="svgContentStr" :style="{ width: width, height: height }" ref="svgParentContainer"/> <!-- svg -->
     <img v-else class="image-preview" :src="src" :style="{ width: width, height: height }" /> <!-- image -->
 </template>
+
 <script lang="ts" setup>
-import { defineProps, computed, ref, onBeforeMount, nextTick } from 'vue';
+import { defineProps, computed, ref, watch, nextTick } from 'vue';
 import axios from 'axios';
 
 const props = defineProps({
@@ -26,8 +27,8 @@ const isSvg = computed<boolean>(() => /(\.svg)$/igm.test(props.src)); // 是否�
 const svgContentStr = ref<string>(''); // svg字符串内容
 const svgParentContainer = ref<HTMLElement>(document.body);
 
-onBeforeMount(() => {
-    if (isSvg.value) { // 如果是svg就加载svg图片
+watch(() => props.src, (n, o) => {
+    if (n !== o && isSvg.value) { // 如果是svg就加载svg图片
         axios.get(props.src).then(({ data }) => {
             svgContentStr.value = data; // 保存svg内容
             nextTick(() => {
@@ -39,8 +40,9 @@ onBeforeMount(() => {
             });
         });
     }
-});
+}, { immediate: true });
 </script>
+
 <style scoped lang="scss">
 .image-preview {
   overflow: visible;

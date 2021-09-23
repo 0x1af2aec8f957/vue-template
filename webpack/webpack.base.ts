@@ -605,7 +605,7 @@ config // 插件项
     .end();
 
 config.devServer /// doc: https://github.com/webpack/webpack-dev-server
-    // TODO 需要 webpack-chain 支持才能升级到4.x版本, 升级文档 https://github.com/webpack/webpack-dev-server/blob/master/migration-v4.md
+    .headers({ 'Access-Control-Allow-Origin': '*' }) // 允许在开发期间跨域访问，适用于微前端的开发调试
     .hot(true)
     .host('local-ip')
     .port('auto')

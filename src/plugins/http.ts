@@ -70,7 +70,7 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
 
         const newData: {[key: string]: any} = deepCopy(data);
 
-        if (typeOf(newData) !== 'object' || !headers.pretreatment) return newData;
+        if (typeOf(newData) !== 'object' || !headers?.pretreatment) return newData;
 
         switch (true) {
         case newData.code === 0: // 去登录示例

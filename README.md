@@ -59,7 +59,7 @@
     2. [webpack](https://webpack.js.org/configuration/)
 + vue
     1. [vue](https://v3.vuejs.org)
-    2. [vuex](https://next.vuex.vuejs.org)
+    2. [vuex](https://next.vuex.vuejs.org) -> [pinia](https://pinia.esm.dev)
     3. [vue-router](https://next.router.vuejs.org)
     3. [vue-i18n](https://vue-i18n-next.intlify.dev)
 + http

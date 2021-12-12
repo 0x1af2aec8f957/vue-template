@@ -4,7 +4,7 @@ import http from 'axios'; /// doc: https://github.com/axios/axios#axios-api
 import moment from 'moment'; /// doc: https://momentjs.com/docs
 import cookies from 'cookies-js'; /// doc: https://github.com/ScottHamper/Cookies
 
-import i18n from '../setup/i18n-setup';
+import { getI18nLanguage } from '../setup/i18n-setup';
 import router from '../setup/router-setup';
 import { typeOf, deepCopy } from '../utils/common';
 
@@ -37,7 +37,7 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
             token: cookies.get('token'),
             'X-B3-Traceid': moment().valueOf() * 1000, // Traceid
             'X-B3-Spanid': moment().valueOf() * 1000, // Spanid
-            'Accept-Language': i18n.global.locale, // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language
+            'Accept-Language': getI18nLanguage(), // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language
             ...config.headers
         },
         transformRequest: [

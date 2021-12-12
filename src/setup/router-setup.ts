@@ -4,7 +4,7 @@ import type { Locale } from '@intlify/runtime';
 import VueRouter, { createRouter, createWebHistory } from 'vue-router'; /// doc: https://router.vuejs.org/api
 import cookies from 'cookies-js';
 
-import i18n, { setI18nLanguage, LangKeyString } from './i18n-setup';
+import i18n, { setI18nLanguage, LangKeyString, getI18nLanguage } from './i18n-setup';
 import routes from '../routes';
 
 type _RouteMethod = {
@@ -25,7 +25,7 @@ const router: Router = createRouter({
 const routerNext = { // router进入页面前执行的事件
     setLanguage({ meta, path }: RouteLocationNormalized): Promise<boolean> { // 语言设置
         const {
-            lang = locales.find(_locale => new RegExp(`^/${_locale}`, 'im').test(path)) /* 路径设置语言 */ || i18n.global.locale
+            lang = locales.find(_locale => new RegExp(`^/${_locale}`, 'im').test(path)) /* 路径设置语言 */ || getI18nLanguage()
         } = meta;
 
         if (lang) setI18nLanguage(lang as LangKeyString);

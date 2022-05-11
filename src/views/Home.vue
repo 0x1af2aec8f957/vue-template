@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, onActivated, getCurrentInstance } from 'vue';
 import { storeToRefs } from 'pinia';
 import useTest from '../store/test';
 import api from '../api/fetchTest';
@@ -46,6 +46,10 @@ export default defineComponent({
         const decrement = () => {
             count.value--;
         };
+
+        /* onActivated(() => {
+            console.log('home-view is activated by `KeepAlive` component');
+        }); */
 
         return {
             count,

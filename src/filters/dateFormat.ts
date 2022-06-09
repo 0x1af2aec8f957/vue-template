@@ -1,6 +1,7 @@
 import type { App } from 'vue';
+import type { Duration } from 'dayjs/plugin/duration';
 
-import moment, { unitOfTime, MomentInput, Duration } from 'moment';
+import moment, { QUnitType, OpUnitType, ConfigType } from 'dayjs';
 import { arraySort, ArrayItemType } from '../filters/arraySort';
 import { hyphenate } from '../utils/common';
 
@@ -20,7 +21,7 @@ export function timeStampToDate(timeStamp: number, reg: string = 'YYYY.MM.DD HH:
     return moment(timeStamp).format(reg);
 }
 
-export function timeDuration(start: MomentInput, end: MomentInput, key: unitOfTime.Diff): number | DateDiff { // 时间周期，支持单独获取一个key的时间周期
+export function timeDuration(start: ConfigType, end: ConfigType, key: QUnitType | OpUnitType): number | DateDiff { // 时间周期，支持单独获取一个key的时间周期
     const momentDiff: number = moment(start).diff(moment(end), key, true);
     const timeDuration: Duration = moment.duration(momentDiff);
     return key ? momentDiff : {
@@ -35,13 +36,13 @@ export function timeDuration(start: MomentInput, end: MomentInput, key: unitOfTi
     };
 }
 
-export function flowsGroup<T>(flows: any[], attr: string, key: unitOfTime.StartOf = 'day') { // 数据分组处理
-    type FlowItem = T & { [key: string]: MomentInput};
+export function flowsGroup<T>(flows: any[], attr: string, key: OpUnitType = 'day') { // 数据分组处理
+    type FlowItem = T & { [key: string]: ConfigType};
     return arraySort<ArrayItemType & FlowItem>(flows, attr, -1).reduce((acc: Array<FlowItem[]>, cur: FlowItem) => {
         const lastFlows: FlowItem[] = acc.slice(-1).flat();
         const lastFlow: FlowItem = lastFlows.slice(-1)[0] || <FlowItem>{};
         /* [isoWeek[1-7],week[7-6]] */
-        const condition = moment(<MomentInput>lastFlow[attr]).isSame(<MomentInput>cur[attr], key); // 按照时间进行分组
+        const condition = moment(<ConfigType>lastFlow[attr]).isSame(<ConfigType>cur[attr], key); // 按照时间进行分组
         if (condition) {
             acc.splice(-1, 1, lastFlows.concat(cur));
             return acc;

@@ -15,7 +15,7 @@ import { VueLoaderPlugin } from 'vue-loader';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CompressionPlugin from 'compression-webpack-plugin';
-import MomentLocalesPlugin from 'moment-locales-webpack-plugin';
+// import MomentLocalesPlugin from 'moment-locales-webpack-plugin';
 import * as Handlebars from 'handlebars';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
@@ -569,11 +569,11 @@ config // 插件项
                 files: ['**!/!*.{vue,htm,html,css,sss,less,scss,sass}']
             }])
         .end() */
-    .plugin('moment-locales-plugin') // moment-locale: https://github.com/iamakulov/moment-locales-webpack-plugin#usage
+    /* .plugin('moment-locales-plugin') // moment-locale: https://github.com/iamakulov/moment-locales-webpack-plugin#usage
     .use(MomentLocalesPlugin, [{ // moment需要抽取的语言要在这里列出，否则会导致国际化不完善的情况
         localesToKeep: ['es-us', 'zh-cn']
     }])
-    .end()
+    .end() */
     .plugin('define-plugin')
     .use(DefinePlugin, [{
         __VUE_OPTIONS_API__: JSON.stringify(true),
@@ -613,6 +613,7 @@ config.devServer /// doc: https://github.com/webpack/webpack-dev-server
     .open(true)
     .compress(true)
     .client
+    // @ts-ignore
     .set('overlay', {
         errors: true,
         warnings: false
@@ -632,6 +633,7 @@ config.optimization // 构建与打包优化项  /// doc: https://webpack.js.org
     .use(TerserPlugin, [{ /// doc: https://github.com/terser/terser#minify-options
         parallel: true, // 并发构建
         terserOptions: { // Terser 压缩配置
+            // @ts-ignore
             format: { /// doc: https://github.com/terser/terser#format-options
                 comments: isDevelopment || /@license/i, // 剥离所有有效的注释（即 /^\**!|@preserve|@license|@cc_on/i ）并保留 /@license/i 注释
               },
@@ -679,6 +681,7 @@ config.when(
         (config: Config): void => {
             config.plugin('compression-plugin')// gzip压缩
                 .use(CompressionPlugin, [{
+                    algorithm: 'gzip',
                     test: /\.(js|css)(\?.*)?$/i, // 需要压缩的文件正则
                     threshold: 10240, // 文件大小大于这个值时启用压缩
                     deleteOriginalAssets: false // 压缩后保留原文件

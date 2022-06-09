@@ -30,6 +30,7 @@
     "@typescript-eslint"
   ],
   "rules": {
+    "vue/multi-word-component-names": 0,
     "no-console": "warn",
     "no-debugger": "warn",
     "global-require": 0,

@@ -1,7 +1,7 @@
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSource, Canceler } from 'axios';
 
 import http from 'axios'; /// doc: https://github.com/axios/axios#axios-api
-import moment from 'moment'; /// doc: https://momentjs.com/docs
+import moment from 'dayjs'; /// doc: https://momentjs.com/docs
 import cookies from 'cookies-js'; /// doc: https://github.com/ScottHamper/Cookies
 
 import { getI18nLanguage } from '../setup/i18n-setup';

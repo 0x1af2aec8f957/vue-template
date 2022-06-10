@@ -80,10 +80,11 @@ export default router;
 declare module 'vue-router' { // 扩展RouteMeta类型信息
     interface RouteMeta {
         // is optional
-        lang?: string
-        title?: string | Function
-        requiresAuth?: string
+        lang?: string,
+        title?: string | Function,
+        requiresAuth?: string,
+        keepAlive?: boolean,
         // must be declared by every route
-        redirection: Function | string
+        redirection?: Function | string,
     }
 }

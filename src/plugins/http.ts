@@ -68,8 +68,8 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
             config: AxiosRequestConfig
         } = response;
 
+        if (Object.prototype.toLocaleString.call(data) === '[object Blob]') return data; // 二进制下载文件
         const newData: {[key: string]: any} = deepCopy(data);
-
         if (typeOf(newData) !== 'object' || !headers?.pretreatment) return newData;
 
         switch (true) {

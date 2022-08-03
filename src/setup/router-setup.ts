@@ -1,5 +1,5 @@
 import type { Router, NavigationGuardNext, RouteLocationNormalized, RouteLocationRaw, _RouteLocationBase } from 'vue-router'; /// doc: https://router.vuejs.org/api
-import type { Locale } from '@intlify/runtime';
+import type { Locale } from '@intlify/core-base';
 
 import VueRouter, { createRouter, createWebHistory } from 'vue-router'; /// doc: https://router.vuejs.org/api
 import cookies from 'cookies-js';

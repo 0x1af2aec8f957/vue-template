@@ -60,6 +60,8 @@
 + webpack
     1. [webpack-chain](https://github.com/neutrinojs/webpack-chain)
     2. [webpack](https://webpack.js.org/configuration/)
++ parcel
+    1. [parceljs](https://parceljs.org/docs)
 + vue
     1. [vue](https://v3.vuejs.org)
     2. [vuex](https://next.vuex.vuejs.org) -> [pinia](https://pinia.esm.dev)
@@ -82,3 +84,4 @@
 
 1. [stylelint-webpack-plugin·V2.2.0](https://github.com/webpack-contrib/stylelint-webpack-plugin/issues/234#issue-922440555) Build将需要更长时间（可能长达数十分钟，请勿轻易升级）的等待。
 2. [postcss-html·V1.2.0](https://github.com/stylelint/vscode-stylelint/issues/239#issuecomment-930422581) 无法找到`postcss-html/extract`模块，请勿轻易升级。
+3. 由于`parcel`自身使用`JSON5`处理配置文件，所以在模板在配置文件中使用了注释，但是`webpack`自身使用的是`nodejs`解析的，当你使用`webpack`运行时，请将配置文件中的注释消除，避免抛出不必要的异常错误。

@@ -1,0 +1,7 @@
+{
+  "customBlocks": {
+    // "i18n": "vue-i18n-bridge/dist/vue-i18n-bridge.runtime.esm-bundler.js"
+    // "i18n": "@intlify/vite-plugin-vue-i18n"
+    // "i18n": "@intlify/unplugin-vue-i18n"
+  }
+}

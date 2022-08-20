@@ -23,12 +23,13 @@ import ESLintPlugin from 'eslint-webpack-plugin'; // NOTE: 不需要和ForkTsChe
 import StyleLintPlugin from 'stylelint-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 
+const workDir: string = process.cwd();
+
 const packageInfo = require('../package.json');
-const httpProxy = require('./webpack.proxy');
+const httpProxy = /* require('./webpack.proxy') */JSON.parse(fs.readFileSync(path.join(workDir, '.proxyrc')).toString());
 const serverBefore = require('./service');
 const webpackMerge = require('./webpack.custom');
 
-const workDir: string = process.cwd();
 const config = new Config();
 const ENV = process.env?.NODE_ENV as 'production' | 'development' | 'none';
 const isProduction: boolean = ENV === 'production';
@@ -44,7 +45,7 @@ const {
 } = packageInfo;
 
 const publicPath: string = url.resolve(realmName, isDevelopment ? './' : `${projectName}/`); // publicPath & url, 资源引用前缀
-const outputPath: string = path.resolve(workDir, projectName); // webpack 打包输出目录
+const outputPath: string = path.resolve(workDir, 'build'); // webpack 打包输出目录
 
 const envVariable = { // 工作区注入的环境变量
     BASE_URL: isDevelopment? '/' : `/${projectName}`, /// 项目基准位置，doc: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
@@ -516,7 +517,7 @@ config // 插件项
         threads: true, // 线程池自动
         files: '**/*.(vue|htm|html|css|style|styl|less|(s(c|a)ss))', // 检测的文件扩展名称
         fix: true, // 自动修复错误
-        customSyntax: 'stylelint-plugin-stylus/custom-syntax' // 自定义支持stylus语法解析
+        customSyntax: "postcss-html" // 自定义支持stylus语法解析
         // lintDirtyModulesOnly: true,
         // exclude: 'node_modules'
     }])
@@ -685,7 +686,7 @@ config.when(
                     test: /\.(js|css)(\?.*)?$/i, // 需要压缩的文件正则
                     threshold: 10240, // 文件大小大于这个值时启用压缩
                     deleteOriginalAssets: false // 压缩后保留原文件
-                }])
+                } as any])
                 .end()
                 .end();
         }

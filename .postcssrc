@@ -1,0 +1,7 @@
+{
+    "plugins": {
+        "postcss-import": {},
+        "postcss-url": {}
+        // "autoprefixer": {} // 使用webpack需要打开本行注释
+    }
+}

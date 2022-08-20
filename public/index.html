@@ -6,8 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
-    <link rel="icon" href="./public/favicon.ico"/>
+    <link rel="icon" href="/public/favicon.ico"/>
     <title><%= process.env.NAME %>-<%= process.env.VERSION %></title>
+    <!-- paceljs 需要显著的引入 -->
+    <script type="module" src="/src/main.ts"></script>
     <!-- <script type="text/javascript">
         window.onload = window.onresize = function(){var el=document.documentElement;return el.style.fontSize = (el.clientWidth / 10) + 'px';} // rem.js
         console.log('<%= JSON.stringify(process.env) %>') // 查看全局环境变量

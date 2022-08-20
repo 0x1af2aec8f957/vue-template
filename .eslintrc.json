@@ -34,6 +34,7 @@
     "no-console": "warn",
     "no-debugger": "warn",
     "global-require": 0,
+    "vue/multi-word-component-names": 0, // 忽略Vue组件名错误
     "indent": [
       "error",
       4

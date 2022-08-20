@@ -1,6 +1,6 @@
 {
-  "extends": ["stylelint-config-standard", "stylelint-config-recommended-scss", "stylelint-plugin-stylus/standard", "stylelint-plugin-stylus/recommended"],
-  "plugins": ["stylelint-scss", "stylelint-plugin-stylus"],
+  "extends": ["stylelint-config-standard", "stylelint-config-recommended-scss"],
+  "plugins": ["stylelint-scss"],
   "ignoreFiles": ["node_modules/**/*.*", "build/**/*.*"],
   "rules": {
     "color-no-invalid-hex": true,

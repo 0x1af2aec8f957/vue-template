@@ -4,9 +4,9 @@
   "version": "0.0.1",
   "description": "基于Vue+Webpack+Typescript项目模板",
   "scripts": {
-    "serve": "cross-env NODE_ENV=development webpack serve --config 'webpack/webpack.base.ts'",
+    "serve": "parcel serve ./public/index.html  --log-level=info",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cross-env NODE_ENV=production ENV=production webpack --config 'webpack/webpack.base.ts' --progress=profile"
+    "build": "parcel build ./public/index.html  --log-level=error --no-cache"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "targets": {
@@ -31,12 +31,14 @@
     "pinia": "^2.0.14",
     "vue": "^3.2.37",
     "vue-i18n": "^9.2.0-beta.36",
-    "vue-router": "^4.0.15"
+    "vue-router": "4.0.15"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@intlify/vue-i18n-loader": "^3.2.0",
+    "@parcel/transformer-less": "2.7.0",
+    "@parcel/transformer-sass": "2.7.0",
     "@parcel/transformer-vue": "2.7.0",
     "@parcel/transformer-yaml": "2.7.0",
     "@parcel/validator-typescript": "^2.7.0",

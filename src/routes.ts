@@ -12,7 +12,7 @@ const routes: RouteRecordRaw[] = [
             {
                 path: '',
                 name: 'default',
-                redirect: 'home'
+                redirect: '/home'
                 // meta: { title: '首页' },
             },
             {
@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
         ]
     },
     { /// menu mode
-        path: 'menu',
+        path: '/menu',
         name: 'menu',
         component: { render: () => h(RouterView) }, // 嵌套路由无固定component模式
         meta: { title: '菜单嵌套递归占位模式', keepAlive: false },

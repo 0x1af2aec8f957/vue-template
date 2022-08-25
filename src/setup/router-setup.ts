@@ -86,5 +86,6 @@ declare module 'vue-router' { // 扩展RouteMeta类型信息
         keepAlive?: boolean,
         // must be declared by every route
         redirection?: Function | string,
+        isMenu?: boolean, // 是否是菜单
     }
 }

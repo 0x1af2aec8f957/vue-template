@@ -7,13 +7,15 @@ import cookies from 'cookies-js'; /// doc: https://github.com/ScottHamper/Cookie
 import { getI18nLanguage } from '../setup/i18n-setup';
 import router from '../setup/router-setup';
 import { typeOf, deepCopy } from '../utils/common';
+import { generateKey, decryptFunc, encrypt, generateIv } from '../utils/aes_128_cbc';
 
 export type { AxiosInstance };
 
-enum AcceptType {
+export enum AcceptType {
     Json = 'application/json',
     Plain = 'ext/plain',
-    Multipart = 'multipart/form-data'
+    Multipart = 'multipart/form-data',
+    stream = 'application/json, ext/plain',
 }
 
 const xhrDefaultConfig: AxiosRequestConfig = {
@@ -42,12 +44,21 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
         },
         transformRequest: [
             (data: {[key: string]: any}, headers: {[key: string]: any}) => {
+                const cryptoKey = generateKey(String(config.url));
+                const cryptoIv = generateIv(cryptoKey);
+                const currData = config.method === 'post' && headers.isDecrypt ? encrypt(cryptoKey, cryptoIv, data) : JSON.stringify(data);
+
                 switch (true) {
                 case headers.Accept === AcceptType.Json:
-                    return JSON.stringify(data);
+                    return currData;
                 case headers.Accept === AcceptType.Plain:
-                    return JSON.stringify(data);
+                    return currData;
                 case headers.Accept === AcceptType.Multipart:
+                    return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
+                        acc.append(...cur);
+                        return acc;
+                    }, new FormData());
+                case headers.Accept === AcceptType.stream:
                     return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
                         acc.append(...cur);
                         return acc;
@@ -62,21 +73,23 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
     instance.interceptors.response.use((response: AxiosResponse): any => {
         const {
             data,
-            config: { headers }
+            config: { headers, url }
         }: {
             data: any,
             config: AxiosRequestConfig
         } = response;
+        const cryptoKey = generateKey(String(url));
+        const cryptoIv = generateIv(cryptoKey);
 
         if (Object.prototype.toLocaleString.call(data) === '[object Blob]') return data; // 二进制下载文件
-        const newData: {[key: string]: any} = deepCopy(data);
+        const newData: {[key: string]: any} = response.headers.decrypt === 'true' ? decryptFunc(cryptoKey, cryptoIv, data) : deepCopy(data);
         if (typeOf(newData) !== 'object' || !headers?.pretreatment) return newData;
 
         switch (true) {
         case newData.code === 0: // 去登录示例
             // toast('请登录');
             cookies.expire('token');
-            router.replace('login');
+            router.replace('/login');
             return Promise.reject(new Error(`${data.code} 登录超时`));
         case newData.status === 1: // 正常
             return newData.data;

@@ -6,21 +6,9 @@
   "scripts": {
     "serve": "parcel serve ./public/index.html  --log-level=info",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build ./public/index.html  --log-level=error --no-cache --no-source-maps --profile --version"
+    "build": "parcel build ./public/index.html  --no-cache --no-source-maps --log-level='error' --dist-dir='./build'"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
-  "targets": {
-    "frontend": {
-      "source": "/public/index.html"
-    },
-    "backend": {
-      "source": "/api/index.js"
-    },
-    "default": {
-      "distDir": "./build",
-      "publicUrl": "/"
-    }
-  },
   "author": "0x23fd5097@gmail.com",
   "license": "ISC",
   "dependencies": {

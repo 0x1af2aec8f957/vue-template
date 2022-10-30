@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "parcel serve ./public/index.html  --log-level=info",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build ./public/index.html  --log-level=error --no-cache"
+    "build": "parcel build ./public/index.html  --log-level=error --no-cache --no-source-maps --profile --version"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "targets": {

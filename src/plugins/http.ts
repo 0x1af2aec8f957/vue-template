@@ -7,7 +7,7 @@ import cookies from 'cookies-js'; /// doc: https://github.com/ScottHamper/Cookie
 import { getI18nLanguage } from '../setup/i18n-setup';
 import router from '../setup/router-setup';
 import { typeOf, deepCopy } from '../utils/common';
-import { generateKey, decryptFunc, encrypt, generateIv } from '../utils/aes_128_cbc';
+import { generateKey, decrypt, encrypt, generateIv } from '../utils/aes_128_cbc';
 
 export type { AxiosInstance };
 
@@ -43,10 +43,10 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
             ...config.headers
         },
         transformRequest: [
-            (data: {[key: string]: any}, headers: {[key: string]: any}) => {
-                const cryptoKey = generateKey(String(config.url));
-                const cryptoIv = generateIv(cryptoKey);
-                const currData = config.method === 'post' && headers.isDecrypt ? encrypt(cryptoKey, cryptoIv, data) : JSON.stringify(data);
+            async (data: {[key: string]: any}, headers: {[key: string]: any}) => {
+                const cryptoKey =  await generateKey(String(config.url));
+                const cryptoIv =  await generateIv(await generateKey(String(config.url), false));
+                const currData = config.method === 'post' && headers.isDecrypt ? await encrypt(cryptoKey, cryptoIv, data) : JSON.stringify(data);
 
                 switch (true) {
                 case headers.Accept === AcceptType.Json:
@@ -70,7 +70,7 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
         ]
     }), (error: Error) => Promise.reject(error) /* toast(error.message) */);
 
-    instance.interceptors.response.use((response: AxiosResponse): any => {
+    instance.interceptors.response.use(async (response: AxiosResponse): Promise<any> => {
         const {
             data,
             config: { headers, url }
@@ -78,11 +78,11 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
             data: any,
             config: AxiosRequestConfig
         } = response;
-        const cryptoKey = generateKey(String(url));
-        const cryptoIv = generateIv(cryptoKey);
+        const cryptoKey =  await generateKey(String(url));
+        const cryptoIv =  await generateIv(await generateKey(String(url), false));
 
         if (Object.prototype.toLocaleString.call(data) === '[object Blob]') return data; // 二进制下载文件
-        const newData: {[key: string]: any} = response.headers.decrypt === 'true' ? decryptFunc(cryptoKey, cryptoIv, data) : deepCopy(data);
+        const newData: {[key: string]: any} = response.headers.decrypt === 'true' ? await decrypt(cryptoKey, cryptoIv, data) : deepCopy(data);
         if (typeOf(newData) !== 'object' || !headers?.pretreatment) return newData;
 
         switch (true) {

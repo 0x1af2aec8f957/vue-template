@@ -12,7 +12,7 @@
     </section>
     <h3>mock数据及http插件</h3>
     <section>
-      <button @click="fetchMockTest">调用fetchMockTest获取mock数据</button>
+      <button @click="fetchMockTestFunc">调用fetchMockTest获取mock数据</button>
       <p>mockData ==> {{mockData || '- -'}}</p>
     </section>
   </div>
@@ -22,7 +22,7 @@
 import { defineComponent, PropType, ref, onActivated, getCurrentInstance } from 'vue';
 import { storeToRefs } from 'pinia';
 import useTest from '../store/test';
-import api from '../api/fetchTest';
+import { fetchMockTest } from '../api/fetchTest';
 
 export default defineComponent({
     name: 'home-view',
@@ -33,9 +33,11 @@ export default defineComponent({
 
         const { count: storeCount } = storeToRefs(store);
 
-        const fetchMockTest = () => {
-            api.fetchMockTest().then((r: object): void => {
+        const fetchMockTestFunc = () => {
+            fetchMockTest().then((r: object): void => {
                 mockData.value = JSON.stringify(r, null, 2);
+            }).catch((err: Error) => {
+              console.log('err', err);
             });
         };
 
@@ -59,7 +61,7 @@ export default defineComponent({
             decrement,
             storeIncrement: store.increment,
             storeDecrement: store.decrement,
-            fetchMockTest
+            fetchMockTestFunc
         };
     }
 });

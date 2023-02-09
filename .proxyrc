@@ -1,9 +1,9 @@
 { /// doc: https://github.com/chimurai/http-proxy-middleware#http-proxy-options
   "/api": {
-    "target": "https://www.example.com",
-    "changeOrigin": true
-    /* "pathRewrite": {
-        "^/": "", // rewrite...
+    "target": "https://www.htsmartpay.com",
+    "changeOrigin": true,
+   /* "pathRewrite": {
+        "^/mock": "/api/v1", // rewrite...
     }, */
-}
+  }
 }

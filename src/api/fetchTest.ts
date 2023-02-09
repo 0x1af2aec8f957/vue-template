@@ -1,26 +1,17 @@
-// eslint-disable-next-line max-classes-per-file
-import type { AxiosInstance } from 'axios';
+import{ useHttp } from '../plugins/http';
 
-import http from '../plugins/http';
+const [api] = useHttp('/api');
 
-abstract class Api {
-    protected api: AxiosInstance;
+// export function fetchMockTest(): Promise<any> {
+//     return api.get('/test' /* path: /api/test */, { params: { t: Date.now().valueOf() } }).then((r: any) => {
+//         console.log(`获取到mock数据：${JSON.stringify(r)}`);
+//         return r;
+//     });
+// }
 
-    constructor() {
-        const baseUrl: string = '/mock';
-        this.api = http[baseUrl] || http.instance(baseUrl);
-    }
-
-    // protected abstract verifyParamsSchema<T>(params: object, schema: object): T | null;  // 如果需要中间件拦截(参数验证等服务)，可以使用Joi集成服务
+export function fetchMockTest(): Promise<any> {
+    return api.get('/v1/info/app/download', { params: {appType: 2} }).then((r: any) => {
+        console.log(`获取到mock数据：${JSON.stringify(r)}`);
+        return r;
+    });
 }
-
-class FetchTest extends Api {
-    fetchMockTest(): Promise<any> {
-        return this.api.get('/test' /* path: /api/test */, { params: { t: Date.now().valueOf() } }).then((r: any) => {
-            console.log(`获取到mock数据：${JSON.stringify(r)}`);
-            return r;
-        });
-    }
-}
-
-export default new FetchTest();

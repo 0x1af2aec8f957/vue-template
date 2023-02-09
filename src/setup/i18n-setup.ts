@@ -1,10 +1,8 @@
 /* eslint-disable camelcase */
-import type { VueMessageType } from 'vue-i18n';
+import { createI18n, type VueMessageType, type I18nOptions } from 'vue-i18n';
 import http from 'axios';
 import { WritableComputedRef } from 'vue';
 import type { LocaleMessages, Locale, FallbackLocale } from '@intlify/core-base';
-
-import { createI18n } from 'vue-i18n';
 
 import en_US from '../lang/en-US.yml';
 import zh_CN from '../lang/zh-CN.yml';

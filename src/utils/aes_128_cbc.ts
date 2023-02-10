@@ -1,6 +1,6 @@
 import md5 from 'md5';
 
-/// NOTE: crypto 仅在 HTTPS 环境下可用
+/// NOTE: web.crypto 仅在 HTTPS 环境下可用
 export const generateKey = (urlStr: string, isCompliance: boolean = true) => { // 根据url生成key
     const key = md5(String(urlStr.split('/').pop()));
 

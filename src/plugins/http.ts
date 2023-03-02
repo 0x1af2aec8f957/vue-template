@@ -32,43 +32,45 @@ const xhrDefaultConfig: AxiosRequestConfig = {
 };
 
 function httpInit(instance: AxiosInstance): AxiosInstance {
-    instance.interceptors.request.use((config: AxiosRequestConfig): any => ({
-        ...config,
-        headers: {
-            pretreatment: true, // 是否进行数据预处理，不进行预处理将返回原始的数据结构到集成层（适用于获取完整的数据结构，而非仅获取需要的数据）
-            token: cookies.get('token'),
-            'X-B3-Traceid': moment().valueOf() * 1000, // Traceid
-            'X-B3-Spanid': moment().valueOf() * 1000, // Spanid
-            'Accept-Language': getI18nLanguage(), // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language
-            ...config.headers
-        },
-        transformRequest: [
-            async (data: {[key: string]: any}, headers: {[key: string]: any}) => {
-                const cryptoKey =  await generateKey(String(config.url));
-                const cryptoIv =  await generateIv(await generateKey(String(config.url), false));
-                const currData = config.method === 'post' && headers.isDecrypt ? await encrypt(cryptoKey, cryptoIv, data) : JSON.stringify(data);
+    instance.interceptors.request.use(async (config: AxiosRequestConfig): Promise<any> => {
+        const cryptoKey =  await generateKey(String(config.url));
+        const cryptoIv =  await generateIv(await generateKey(String(config.url), false));
+        const currData = config.method === 'post' && config.headers?.isDecrypt ? await encrypt(cryptoKey, cryptoIv, config.data) : JSON.stringify(config.data);
 
-                switch (true) {
-                case headers.Accept === AcceptType.Json:
-                    return currData;
-                case headers.Accept === AcceptType.Plain:
-                    return currData;
-                case headers.Accept === AcceptType.Multipart:
-                    return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
-                        acc.append(...cur);
-                        return acc;
-                    }, new FormData());
-                case headers.Accept === AcceptType.stream:
-                    return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
-                        acc.append(...cur);
-                        return acc;
-                    }, new FormData());
-                default:
-                    break;
+        return {
+            ...config,
+            headers: {
+                pretreatment: true, // 是否进行数据预处理，不进行预处理将返回原始的数据结构到集成层（适用于获取完整的数据结构，而非仅获取需要的数据）
+                token: cookies.get('token'),
+                'X-B3-Traceid': moment().valueOf() * 1000, // Traceid
+                'X-B3-Spanid': moment().valueOf() * 1000, // Spanid
+                'Accept-Language': getI18nLanguage(), // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language
+                ...config.headers
+            },
+            transformRequest: [
+                (data: {[key: string]: any}, headers: {[key: string]: any}) => {    
+                    switch (true) {
+                    case headers.Accept === AcceptType.Json:
+                        return currData;
+                    case headers.Accept === AcceptType.Plain:
+                        return currData;
+                    case headers.Accept === AcceptType.Multipart:
+                        return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
+                            acc.append(...cur);
+                            return acc;
+                        }, new FormData());
+                    case headers.Accept === AcceptType.stream:
+                        return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
+                            acc.append(...cur);
+                            return acc;
+                        }, new FormData());
+                    default:
+                        break;
+                    }
                 }
-            }
-        ]
-    }), (error: Error) => Promise.reject(error) /* toast(error.message) */);
+            ]
+        }
+    }, (error: Error) => Promise.reject(error) /* toast(error.message) */);
 
     instance.interceptors.response.use(async (response: AxiosResponse): Promise<any> => {
         const {

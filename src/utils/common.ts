@@ -120,7 +120,7 @@ export function typeOf(obj: any): string { // 精准判断数据类型
 
 export function toCapital(n: number | string): string { // 将数字转为大写
     const cNum: string[] = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-    const s: string = cNum.reduce((acc, cur, index, arr) => acc + arr[window.parseInt(n.toString().charAt(Number(cur)), 10)], '');
+    const s: string = n.toString().split('').reduce((acc, cur, index, arr) => acc + (cNum[window.parseInt(cur.charAt(Number(cur)), 10)] ?? ''), '');
 
     if (s.length !== 2) return s; // 非两位数的时候
 
@@ -139,6 +139,10 @@ export function hyphenate(str: string): string { // 驼峰转短横线命名
         .replace(hyphenateRE, '$1-$2')
         .replace(hyphenateRE, '$1-$2')
         .toLowerCase();
+}
+
+export function maskcClusion(str: string, start: number = 3, end?: number): string { // 字符串掩码
+    return str.replace(new RegExp(`(?<=^.{${start}}).*(?=.{${end ?? start}}$)`), '*');
 }
 
 export function sliceLength(arr: any[], startIndex: number, length: number): any[] { // 切割数组，根据长度切割

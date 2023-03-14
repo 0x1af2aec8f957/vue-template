@@ -49,24 +49,19 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
             },
             transformRequest: [
                 (data: {[key: string]: any}, headers: {[key: string]: any}) => {    
-                    switch (true) {
-                    case headers.Accept === AcceptType.Json:
-                        return currData;
-                    case headers.Accept === AcceptType.Plain:
-                        return currData;
-                    case headers.Accept === AcceptType.Multipart:
-                        return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
-                            acc.append(...cur);
-                            return acc;
-                        }, new FormData());
-                    case headers.Accept === AcceptType.stream:
-                        return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
-                            acc.append(...cur);
-                            return acc;
-                        }, new FormData());
-                    default:
-                        break;
-                    }
+                    // if (headers.Accept === AcceptType.Json) return currData;
+                    // if (headers.Accept === AcceptType.Plain) return currData;
+                    if (headers.Accept === AcceptType.Multipart) return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
+                        acc.append(...cur);
+                        return acc;
+                    }, new FormData());
+
+                    if (headers.Accept === AcceptType.stream) return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
+                        acc.append(...cur);
+                        return acc;
+                    }, new FormData());
+
+                    return currData;
                 }
             ]
         }
@@ -87,19 +82,16 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
         const newData: {[key: string]: any} = response.headers.decrypt === 'true' ? await decrypt(cryptoKey, cryptoIv, data) : deepCopy(data);
         if (typeOf(newData) !== 'object' || !headers?.pretreatment) return newData;
 
-        switch (true) {
-        case newData.code === 0: // 去登录示例
-            // toast('请登录');
-            cookies.expire('token');
-            router.replace('/login');
-            return Promise.reject(new Error(`${data.code} 登录超时`));
-        case newData.status === 1: // 正常
-            return newData.data;
-        case newData.result === 'success': // 正常
-            return newData.content;
-        default:
-            return Promise.reject(new Error(newData?.msg || newData?.message));
+        if (newData.code === 0) { // 去登录，错误提示、异常抛出由后续流程继续处理
+            cookies.expire('token'); // 使凭证过期
+            router.push('/login'); // 主动登录
         }
+
+        if (newData.status === 1) { // 正常
+            return newData.data;
+        }
+
+        return Promise.reject(newData?.msg || newData?.message);
     }, (error) => {
         const { response /* __CANCEL__ */ } = error;
         // if (!__CANCEL__) toast(response.message || response.data.message); // 非主动取消请求的接口

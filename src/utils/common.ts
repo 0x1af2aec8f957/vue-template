@@ -120,7 +120,7 @@ export function typeOf(obj: any): string { // 精准判断数据类型
 
 export function toCapital(n: number | string): string { // 将数字转为大写
     const cNum: string[] = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
-    const s: string = n.toString().split('').reduce((acc, cur, index, arr) => acc + (cNum[window.parseInt(cur.charAt(Number(cur)), 10)] ?? ''), '');
+    const s: string = n.toString().split('').map((num) => cNum[window.parseInt(num)]).join('');
 
     if (s.length !== 2) return s; // 非两位数的时候
 

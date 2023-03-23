@@ -9,6 +9,13 @@ declare global { // 声明进入全局命名空间的类型，或者增加全局
      * example: NoInfer<P = void> & (P extends void ? 'You have to pass in a generic' : {}) => err: You have to pass in a generic
      */
     type NoInfer<T> = [T][T extends any ? 0 : never];
+
+    /**
+     * 数字范围类型
+     * example: NumericRange<0, 255> => 0..255
+     */
+    type NumericRange<START extends number, END extends number, ARR extends unknown[] = [],ACC extends number = never> = ARR['length'] extends END ? ACC | START | END : NumericRange<START, END, [...ARR, 1], ARR[START] extends undefined ? ACC : ACC | ARR['length']>
+
     /**
      * 获取对象中的 key
      * example: ObjectPropertyKey<{ a: string, b: number }> => 'a' | 'b

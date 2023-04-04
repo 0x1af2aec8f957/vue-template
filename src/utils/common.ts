@@ -145,6 +145,16 @@ export function maskcClusion(str: string, start: number = 3, end?: number): stri
     return str.replace(new RegExp(`(?<=^.{${start}}).*(?=.{${end ?? start}}$)`), '*');
 }
 
+export function excludeHtmlLabel(str: string, hasBlank: boolean = false){ // 取出 html 标签内的内容
+    const content = str
+        .replace(/<style[\s\S]*>[\s\S]*<\/style>/igm, "") // 清除 style 标签，及其内容区域
+        .replace(/<script[\s\S]*>[\s\S]*<\/script>/igm, "") // 清除 script 标签，及其内容区域
+        .replace(/<\/?.+?>/igm, ""); // 清除 html 标签，保留内容
+
+    if (!hasBlank) return content.replace(/\s*/igm, ""); // 是否不保留空格
+    return content;
+}
+
 export function sliceLength(arr: any[], startIndex: number, length: number): any[] { // 切割数组，根据长度切割
     return arr.slice(startIndex, startIndex + length);
 }

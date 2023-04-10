@@ -4,9 +4,9 @@
   "version": "0.0.1",
   "description": "基于Vue+Parcel+Typescript的项目模板",
   "scripts": {
-    "serve": "parcel serve ./public/index.html --public-url='./' --log-level=info",
+    "serve": "cross-env NODE_OPTIONS=--max-old-space-size=16384 parcel serve ./public/index.html --public-url='./' --log-level=info",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "parcel build ./public/index.html --no-cache --no-source-maps --log-level='error' --dist-dir='./build'"
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=16384 parcel build ./public/index.html --no-cache --no-source-maps --log-level='error' --dist-dir='./build'"
   },
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "author": "0x23fd5097@gmail.com",
@@ -26,7 +26,8 @@
   "devDependencies": {
     "@babel/types": "^7.20.7",
     "@types/md5": "^2.3.2",
-    "@types/node": "^18.13.0"
+    "@types/node": "^18.13.0",
+    "cross-env": "latest"
   },
   "optionalDependencies": {
     "parcel": "latest",

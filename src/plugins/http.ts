@@ -20,10 +20,10 @@ export enum AcceptType {
 
 const xhrDefaultConfig: AxiosRequestConfig = {
     headers: {
-        'Content-Type': `${AcceptType.Json};charset=UTF-8`, /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
+        'Content-Type': AcceptType.Json, /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
         'Cache-Control': 'no-cache', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
         deviceID: `WEB-${window.navigator.userAgent}`,
-        Accept: AcceptType.Json /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
+        Accept: `${AcceptType.Json};charset=UTF-8` /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
         // Connection: 'Keep-Alive', /// HTTP1.1, https://en.wikipedia.org/wiki/HTTP_persistent_connection
         // 'Accept-Encoding': 'gzip', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
         // 'Accept-Charset': 'utf-8', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Charset
@@ -49,14 +49,14 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
             },
             transformRequest: [
                 (data: {[key: string]: any}, headers: {[key: string]: any}) => {    
-                    // if (headers.Accept === AcceptType.Json) return currData;
-                    // if (headers.Accept === AcceptType.Plain) return currData;
-                    if (headers.Accept === AcceptType.Multipart) return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
+                    // if (headers['Content-Type']=== AcceptType.Json) return currData;
+                    // if (headers['Content-Type'] === AcceptType.Plain) return currData;
+                    if (headers['Content-Type'] === AcceptType.Multipart) return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
                         acc.append(...cur);
                         return acc;
                     }, new FormData());
 
-                    if (headers.Accept === AcceptType.stream) return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
+                    if (headers['Content-Type'] === AcceptType.stream) return Object.entries(data).reduce((acc: FormData, cur: [string, any]): FormData => {
                         acc.append(...cur);
                         return acc;
                     }, new FormData());

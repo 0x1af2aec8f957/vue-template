@@ -35,7 +35,7 @@ declare module '*.vue' { // NOTE: ts-loader
     export default component;
 }
 
-declare module CSSProperties { // 全局自定义样式属性
+declare module 'csstype' { // 全局自定义样式属性
     interface Properties {
       // Add a missing property
       //   WebkitRocketLauncher?: string;

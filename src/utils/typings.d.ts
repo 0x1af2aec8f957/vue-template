@@ -35,6 +35,25 @@ declare module '*.vue' { // NOTE: ts-loader
     export default component;
 }
 
+declare module CSSProperties { // 全局自定义样式属性
+    interface Properties {
+      // Add a missing property
+      //   WebkitRocketLauncher?: string;
+  
+      // Add a CSS Custom Property
+    //   '--background-color'?: string;
+  
+      // Allow namespaced CSS Custom Properties
+      //   [index: `--theme-${string}`]: any;
+      
+      // Allow any CSS Custom Properties
+      //   [index: `--${string}`]: any;
+  
+      // ...or allow any other property
+      //   [index: string]: any;
+    }
+}
+
 declare module 'worker-loader!*' { // worker-loader
     // You need to change `Worker`, if you specified a different value for the `workerType` option
     class WebpackWorker extends Worker {

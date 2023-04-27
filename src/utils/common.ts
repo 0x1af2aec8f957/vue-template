@@ -142,6 +142,7 @@ export function hyphenate(str: string): string { // 驼峰转短横线命名
 }
 
 export function maskcClusion(str: string, start: number = 3, end?: number): string { // 字符串掩码
+    // return str.replace(new RegExp(`(?:^.{${start}}).*(?=.{${end ?? start}}$)`), '*'); // 支持 Safari<16.4 的版本
     return str.replace(new RegExp(`(?<=^.{${start}}).*(?=.{${end ?? start}}$)`), '*');
 }
 

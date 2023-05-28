@@ -33,6 +33,7 @@
   },
   "optionalDependencies": {
     "cross-env": "latest",
+    "core-js": "latest",
     "parcel": "latest",
     "typescript": "~4"
   }

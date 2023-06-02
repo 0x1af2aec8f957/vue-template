@@ -1,7 +1,8 @@
 { /// doc: https://github.com/chimurai/http-proxy-middleware#http-proxy-options
   "/api": {
     "target": "https://www.example.com",
-    "changeOrigin": true
+    "secure": false,
+    "changeOrigin": true,
     /* "pathRewrite": {
         "^/": "", // rewrite...
     }, */

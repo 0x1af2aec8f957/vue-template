@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
 .parcel-cache/
+.svn/
 dist/
 build/
 npm-debug.log*
@@ -15,7 +16,12 @@ expressServer.js
 # Editor directories and files
 .idea
 .vscode
+.atom
+.hbuilderx
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
+*.iml
+*.ipr
+*.iws

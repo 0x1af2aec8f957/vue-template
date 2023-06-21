@@ -8,7 +8,7 @@ export const enum ReadyState {
     Closed, // 连接已经关闭或者连接不能打开
 }
 
-export default class<T extends ArrayInnerType<WebSocketParameters<'send'>> = Parameters<typeof JSON.stringify>[0]/* 发送消息的类型 */, U = Parameters<typeof JSON.parse>[0]/* 收到消息的类型 */> {
+export default class<T extends ArrayInnerType<WebSocketParameters<'send'>> | Record<string, any> = Parameters<typeof JSON.stringify>[0]/* 发送消息的类型 */, U = ArrayInnerType<WebSocketParameters<'onmessage'>>['data'] | Parameters<typeof JSON.parse>[0]/* 收到消息的类型 */> {
     private instance: WebSocket; // socket 实例
     state: ReadyState = ReadyState.Initial; // 初始化状态
     manuallyClose = false; // 是否是手动关闭
@@ -79,7 +79,8 @@ export default class<T extends ArrayInnerType<WebSocketParameters<'send'>> = Par
         return (...reset: WebSocketParameters<'onmessage'>) => {
             if (process.env.NODE_ENV === 'development') console.info('customize-socket：收到消息', reset[0]);
             this.state = ReadyState.Done;
-            this.messageCallbacks.forEach((callback) => callback.apply(this.instance, reset));
+            const [{data, ...otherEvent}] = reset;
+            this.messageCallbacks.forEach((callback) => callback.call(this.instance, {...otherEvent, data: typeof data === 'string' ? JSON.parse(data) as U : data}));
         }
         
     }

@@ -17,6 +17,12 @@ declare global { // 声明进入全局命名空间的类型，或者增加全局
     type NumericRange<START extends number, END extends number, ARR extends unknown[] = [],ACC extends number = never> = ARR['length'] extends END ? ACC | START | END : NumericRange<START, END, [...ARR, 1], ARR[START] extends undefined ? ACC : ACC | ARR['length']>
 
     /**
+     * 数字字符串类型
+     * example: NumberString<NumericRange<0, 1>> => '0' | '1'
+     */
+    type NumberString<T extends number> = `${T}`;
+
+    /**
      * 获取对象中的 key
      * example: ObjectPropertyKey<{ a: string, b: number }> => 'a' | 'b
      */

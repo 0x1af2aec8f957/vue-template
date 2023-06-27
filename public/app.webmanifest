@@ -1,0 +1,14 @@
+{
+    "name": "vue-template",
+    "short_name": "vue",
+    "start_url": "/",
+    "display": "standalone",
+    "id": "vue-template",
+    "icons": [
+        {
+            "src": "./favicon.ico",
+            "type": "image/ico",
+            "sizes": "400x400"
+        }
+    ]
+}

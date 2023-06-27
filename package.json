@@ -17,6 +17,7 @@
     "cookies-js": "^1.2.3",
     "dayjs": "^1.11.7",
     "events": "^3.3.0",
+    "idb": "^7.1.1",
     "md5": "^2.3.0",
     "os-browserify": "^0.3.0",
     "pinia": "^2.0.34",
@@ -32,8 +33,8 @@
     "@types/node": "^18.15.11"
   },
   "optionalDependencies": {
-    "cross-env": "latest",
     "core-js": "latest",
+    "cross-env": "latest",
     "parcel": "latest",
     "typescript": "~4"
   }

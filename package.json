@@ -9,7 +9,7 @@
     "browsers": "npx browserslist",
     "build": "cross-env NODE_OPTIONS=--max-old-space-size=16384 parcel build ./public/index.html --no-cache --no-source-maps --log-level='error' --dist-dir='./build'"
   },
-  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "browserslist": "IE 11",
   "author": "0x23fd5097@gmail.com",
   "license": "ISC",
   "dependencies": {

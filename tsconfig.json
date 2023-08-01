@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "allowArbitraryExtensions": false,
-    "forceConsistentCasingInFileNames": true,
+    "composite": true,
     "skipLibCheck": false,
     "noImplicitThis": false,
     "alwaysStrict": true,
@@ -9,12 +8,12 @@
     "strictPropertyInitialization": false,
     "emitDecoratorMetadata": true,
     "noFallthroughCasesInSwitch": true,
-    "target": "es5",
-    "module": "esnext",
+    "target": "ES5",
+    "module": "ESNext",
     "strict": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "importHelpers": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Node",
     "experimentalDecorators": true,
     "allowJs": true,
     "esModuleInterop": true,
@@ -30,16 +29,14 @@
       ]
     },
     "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
+      "ESNext",
+      "DOM",
+      "DOM.Iterable",
+      "ScriptHost"
     ]
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
+    "src/**/*",
   ],
   "exclude": [
     "node_modules/**/*"

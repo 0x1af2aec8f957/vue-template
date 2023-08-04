@@ -92,11 +92,10 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
         }
 
         return Promise.reject(newData?.msg || newData?.message);
-    }, (error) => {
+    }, (error: any) => {
         const { response /* __CANCEL__ */ } = error;
         // if (!__CANCEL__) toast(response.message || response.data.message); // 非主动取消请求的接口
-        // throw new Error(response);
-        return Promise.reject(error.message);
+        // throw new Error(response); // Android-8.1.0 Chrome 打开此处会导致报错无法进入
     });
 
     return instance;

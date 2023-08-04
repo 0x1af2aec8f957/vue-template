@@ -1,0 +1,25 @@
+# Miscellaneous
+**/*.md
+**/*.lock
+**/*.DS_Store
+.gitignore
+*.class
+*.log
+*.pyc
+*.swp
+.history
+*.iml
+*.ipr
+*.iws
+
+# IntelliJ related
+.idea/
+.vscode/
+.atom/
+.buildlog/
+.svn/
+.git/
+temp?
+
+# Exceptions to above rules.
+!README.md

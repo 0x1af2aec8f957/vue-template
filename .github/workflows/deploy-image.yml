@@ -1,0 +1,55 @@
+name: 构建镜像 # 工作流名称
+
+on:
+  push: # 当 push 到 main 分支，或者创建以 v 开头的 tag 时触发
+    paths-ignore: # 忽略触发工作流的文件
+      - 'README.md'
+    branches:
+      - main # 推送更改到 main 分支时触发
+    tags:
+      - v* # 创建以 v 开头的 tag 时触发
+
+env: # 环境变量
+  REGISTRY: ghcr.io # Github Packages 的 host 地址
+  IMAGE_NAME: ${{ github.repository }} # 镜像名称
+
+jobs: # 工作流程
+  build-and-push-image:
+    runs-on: ubuntu-latest # 在最新版的 ubuntu 上运行
+    permissions: # GITHUB_TOKEN 设置时授予的操作权限
+      contents: read
+      packages: write
+
+    steps: # 工作流运行步骤
+      - name: 切换分支
+        uses: actions/checkout@v3 # 参考分支，doc: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-versioned-actions
+
+      - name: 构建应用
+        env:
+          NODE_OPTIONS: "--max-old-space-size=16384" # 设置 NODEJS 运行时允许的最大内存大小，doc: https://nodejs.org/api/cli.html#node_optionsoptions
+        uses: actions/setup-node@v3
+        with:
+          node-version: latest
+      - run: yarn install
+      - run: yarn run build
+
+      - name: 登录镜像仓库托管站点
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 提取源数据（如：tags）， 到 Docker 配置项
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: 构建并推送到指定的 docker 镜像仓库托管站点
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

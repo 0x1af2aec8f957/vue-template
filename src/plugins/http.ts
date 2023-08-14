@@ -84,7 +84,7 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
 
         if (newData.code === 0) { // 去登录，错误提示、异常抛出由后续流程继续处理
             cookies.expire('token'); // 使凭证过期
-            router.push('/login'); // 主动登录
+            router.replace('/login'); // 主动登录
         }
 
         if (newData.status === 1) { // 正常

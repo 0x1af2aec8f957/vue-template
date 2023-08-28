@@ -7,7 +7,10 @@
     "serve": "cross-env NODE_OPTIONS=--max-old-space-size=16384 parcel serve ./public/index.html --log-level=info",
     "test": "echo \"Error: no test specified\" && exit 1",
     "browsers": "npx browserslist",
-    "build": "cross-env NODE_OPTIONS=--max-old-space-size=16384 parcel build ./public/index.html --no-cache --no-source-maps --log-level='error' --dist-dir='./build'"
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=16384 parcel build ./public/index.html --no-cache --no-source-maps --log-level=error --dist-dir=./build"
+  },
+  "targets": {
+    "main": false
   },
   "author": "0x23fd5097@gmail.com",
   "license": "ISC",

@@ -20,13 +20,13 @@ export enum AcceptType {
 
 const xhrDefaultConfig: AxiosRequestConfig = {
     headers: {
-        'Content-Type': AcceptType.Json, /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
-        'Cache-Control': 'no-cache', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-        deviceID: `WEB-${window.navigator.userAgent}`,
-        Accept: `${AcceptType.Json};charset=UTF-8` /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
-        // Connection: 'Keep-Alive', /// HTTP1.1, https://en.wikipedia.org/wiki/HTTP_persistent_connection
-        // 'Accept-Encoding': 'gzip', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
-        // 'Accept-Charset': 'utf-8', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Charset
+        'content-type': AcceptType.Json, /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
+        'cache-control': 'no-cache', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
+        'device-id': `WEB-${window.navigator.userAgent}`,
+        accept: `${AcceptType.Json};charset=UTF-8` /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
+        // connection: 'keep-alive', /// HTTP1.1, https://en.wikipedia.org/wiki/HTTP_persistent_connection
+        // 'accept-encoding': 'gzip', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
+        // 'accept-charset': 'utf-8', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Charset
     }
     // timeout: 1000,
 };
@@ -44,7 +44,7 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
                 token: cookies.get('token'),
                 'X-B3-Traceid': moment().valueOf() * 1000, // Traceid
                 'X-B3-Spanid': moment().valueOf() * 1000, // Spanid
-                'Accept-Language': getI18nLanguage(), // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language
+                'accept-language': getI18nLanguage(), // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language
                 ...config.headers
             },
             transformRequest: [

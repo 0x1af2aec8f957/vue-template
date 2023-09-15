@@ -3,6 +3,7 @@ import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelTokenSourc
 import http from 'axios'; /// doc: https://github.com/axios/axios#axios-api
 import moment from 'dayjs'; /// doc: https://momentjs.com/docs
 import cookies from 'cookies-js'; /// doc: https://github.com/ScottHamper/Cookies
+import FingerprintJS from '@fingerprintjs/fingerprintjs'; /// doc: https://github.com/fingerprintjs/fingerprintjs/blob/master/docs/api.md#webpackrollupnpmyarn
 
 import { getI18nLanguage } from '../setup/i18n-setup';
 import router from '../setup/router-setup';
@@ -22,7 +23,6 @@ const xhrDefaultConfig: AxiosRequestConfig = {
     headers: {
         'content-type': AcceptType.Json, /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type
         'cache-control': 'no-cache', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
-        'device-id': `WEB-${window.navigator.userAgent}`,
         accept: `${AcceptType.Json};charset=UTF-8` /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
         // connection: 'keep-alive', /// HTTP1.1, https://en.wikipedia.org/wiki/HTTP_persistent_connection
         // 'accept-encoding': 'gzip', /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding
@@ -42,6 +42,7 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
             headers: {
                 pretreatment: true, // 是否进行数据预处理，不进行预处理将返回原始的数据结构到集成层（适用于获取完整的数据结构，而非仅获取需要的数据）
                 token: cookies.get('token'),
+                'device-id': await FingerprintJS.load().then((fp) => fp.get().then(({visitorId}) => visitorId)),
                 'X-B3-Traceid': moment().valueOf() * 1000, // Traceid
                 'X-B3-Spanid': moment().valueOf() * 1000, // Spanid
                 'accept-language': getI18nLanguage(), // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language

@@ -33,9 +33,10 @@
     "@types/node": "^18.15.11"
   },
   "optionalDependencies": {
+    "@tsconfig/vite-react": "latest",
     "core-js": "latest",
     "cross-env": "latest",
     "parcel": "latest",
-    "typescript": "~4"
+    "typescript": "~5"
   }
 }

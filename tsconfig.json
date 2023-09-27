@@ -1,38 +1,8 @@
 {
+  "extends": "@tsconfig/vite-react/tsconfig.json",
   "compilerOptions": {
-    "composite": true,
-    "skipLibCheck": false,
-    "noImplicitThis": false,
-    "alwaysStrict": true,
-    "isolatedModules": true,
-    "strictPropertyInitialization": false,
-    "emitDecoratorMetadata": true,
-    "noFallthroughCasesInSwitch": true,
-    "target": "ES5",
-    "module": "ESNext",
-    "strict": true,
-    "jsx": "react-jsx",
-    "importHelpers": true,
-    "moduleResolution": "Node",
-    "experimentalDecorators": true,
-    "allowJs": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "types": [
-      "node"
-    ],
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
-    },
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable",
-      "ScriptHost"
+    "types":[
+      "node",
     ]
   },
   "include": [

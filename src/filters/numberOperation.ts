@@ -23,7 +23,7 @@ export function toFixed(amount: InputNumber, fix: number, mode: 'reg' | 'fixed' 
     }
 
     // fixed mode
-    if (amount > Number.MAX_SAFE_INTEGER || amount < Number.MIN_SAFE_INTEGER) {
+    if (Number(amount) > Number.MAX_SAFE_INTEGER || Number(amount) < Number.MIN_SAFE_INTEGER) {
         console.error('数字超出处理范围，使用reg模式能正常处理，但返回结果是"string"');
         return 0;
     }

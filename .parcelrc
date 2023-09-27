@@ -1,7 +1,7 @@
 {
   "extends": "@parcel/config-default",
   "validators": {
-    "*.{ts,tsx}": ["@parcel/validator-typescript"]
+    "*.{ts,tsx,vue}": ["@parcel/validator-typescript"]
   },
   "resolvers": ["@parcel/resolver-glob", "..."],
   // "transformers": {

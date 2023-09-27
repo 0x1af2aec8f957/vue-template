@@ -9,7 +9,7 @@ export const enum ReadyState {
 }
 
 export default class<T extends ArrayInnerType<WebSocketParameters<'send'>> | Record<string, any> = Parameters<typeof JSON.stringify>[0]/* 发送消息的类型 */, U = ArrayInnerType<WebSocketParameters<'onmessage'>>['data'] | Parameters<typeof JSON.parse>[0]/* 收到消息的类型 */> {
-    private instance: WebSocket; // socket 实例
+    private instance?: WebSocket; // socket 实例
     state: ReadyState = ReadyState.Initial; // 初始化状态
     manuallyClose = false; // 是否是手动关闭
     protected openCallbacks: WebSocketCallback<'onopen'>[]  = [];
@@ -52,7 +52,7 @@ export default class<T extends ArrayInnerType<WebSocketParameters<'send'>> | Rec
         return (...reset: WebSocketParameters<'onopen'>) => {
             if (process.env.NODE_ENV === 'development') console.warn('customize-socket：连接成功');
             this.state = ReadyState.Done;
-            this.openCallbacks.forEach((callback) => callback.apply(this.instance, reset));
+            this.openCallbacks.forEach((callback) => callback.apply(this.instance!, reset));
         }
  
     }
@@ -61,7 +61,7 @@ export default class<T extends ArrayInnerType<WebSocketParameters<'send'>> | Rec
         return (...reset: WebSocketParameters<'onerror'>) => {
             if (process.env.NODE_ENV === 'development') console.error('customize-socket：发生错误', reset[0]);
             this.state = ReadyState.Fail;
-            this.errorCallbacks.forEach((callback) => callback.apply(this.instance, reset));
+            this.errorCallbacks.forEach((callback) => callback.apply(this.instance!, reset));
         }
         
     }
@@ -70,7 +70,7 @@ export default class<T extends ArrayInnerType<WebSocketParameters<'send'>> | Rec
         return (...reset: WebSocketParameters<'onclose'>) => {
             if (process.env.NODE_ENV === 'development') console.warn('customize-socket：被关闭');
             this.state = ReadyState.Closed;
-            this.closeCallbacks.forEach((callback) => callback.apply(this.instance, reset));
+            this.closeCallbacks.forEach((callback) => callback.apply(this.instance!, reset));
         }
 
     }
@@ -80,7 +80,7 @@ export default class<T extends ArrayInnerType<WebSocketParameters<'send'>> | Rec
             if (process.env.NODE_ENV === 'development') console.info('customize-socket：收到消息', reset[0]);
             this.state = ReadyState.Done;
             const [{data, ...otherEvent}] = reset;
-            this.messageCallbacks.forEach((callback) => callback.call(this.instance, {...otherEvent, data: typeof data === 'string' ? JSON.parse(data) as U : data}));
+            this.messageCallbacks.forEach((callback) => callback.call(this.instance!, {...otherEvent, data: typeof data === 'string' ? JSON.parse(data) as U : data}));
         }
         
     }
@@ -148,10 +148,10 @@ export default class<T extends ArrayInnerType<WebSocketParameters<'send'>> | Rec
     init() { // 初始化连接状态、回调函数注册
         this.state = ReadyState.Connecting; // Web Socket 正在链接时的状态
 
-        this.instance.addEventListener('open', this.openCallback); // Web Socket 已连接上
-        this.instance.addEventListener('error', this.errorCallback); // Web Socket 通信发生错误
-        this.instance.addEventListener('close', this.closeCallback); // Web Socket 已关闭
-        this.instance.addEventListener('message', this.messageCallback); // Web Socket 收到消息
+        this.instance?.addEventListener('open', this.openCallback); // Web Socket 已连接上
+        this.instance?.addEventListener('error', this.errorCallback); // Web Socket 通信发生错误
+        this.instance?.addEventListener('close', this.closeCallback); // Web Socket 已关闭
+        this.instance?.addEventListener('message', this.messageCallback); // Web Socket 收到消息
     }
 
     close() { // 关闭 socket
@@ -161,11 +161,11 @@ export default class<T extends ArrayInnerType<WebSocketParameters<'send'>> | Rec
         this.clearErrorCallback();
         this.clearCloseCallback();
         this.clearMessageCallback();
-        this.instance.close(); // 关闭socket
+        this.instance?.close(); // 关闭socket
     }
 
     sendMessage(message: T) { // 发送消息
-        this.instance.send(typeof message === 'string' ? message : JSON.stringify(message));
+        this.instance?.send(typeof message === 'string' ? message : JSON.stringify(message));
         return this;
     }
 }

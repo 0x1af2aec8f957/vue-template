@@ -11,6 +11,8 @@ yarn-error.log*
 package-lock.json
 yarn-lock.json
 yarn.lock
+deno.lock
+bun.lockb
 expressServer.js
 
 # Editor directories and files

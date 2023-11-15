@@ -9,3 +9,5 @@ WORKDIR $WORKDIR
 
 COPY .nginx.conf /etc/nginx/nginx.conf
 COPY --chown=777 ./build .
+
+EXPOSE 80

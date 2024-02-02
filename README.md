@@ -1,5 +1,7 @@
 #### Vue-template
 
+> 项目模板需要在[安全上下文](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts)中运行。
+
 [时间组件国际化·标准](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)  
 [版本组件·标准](https://semver.org/spec/v2.0.0-rc.1.html)
 
@@ -87,4 +89,5 @@
 3. 由于`parcel`自身使用`JSON5`处理配置文件，所以在模板在配置文件中使用了注释，但是`webpack`自身使用的是`nodejs`解析的，当你使用`webpack`运行时，请将配置文件中的注释消除，避免抛出不必要的异常错误。
 
 ##### 帮助
+
 [Buy me a coffee](https://www.buymeacoffee.com/0x1af2aec8f957)

@@ -16,7 +16,7 @@ export enum AcceptType {
     Json = 'application/json',
     Plain = 'ext/plain',
     Multipart = 'multipart/form-data',
-    stream = 'application/json, ext/plain',
+    stream = 'application/octet-stream',
 }
 
 const xhrDefaultConfig: AxiosRequestConfig = {
@@ -33,9 +33,11 @@ const xhrDefaultConfig: AxiosRequestConfig = {
 
 function httpInit(instance: AxiosInstance): AxiosInstance {
     instance.interceptors.request.use(async (config: AxiosRequestConfig): Promise<any> => {
-        const cryptoKey =  await generateKey(String(config.url));
-        const cryptoIv =  await generateIv(await generateKey(String(config.url), false));
-        const currData = config.method === 'post' && config.headers?.isDecrypt ? await encrypt(cryptoKey, cryptoIv, config.data) : JSON.stringify(config.data);
+        const currData = window.isSecureContext && config.method === 'post' && config.headers?.isDecrypt ? await encrypt( // 是否满足加密条件
+            await generateKey(String(config.url)),
+            await generateIv(await generateKey(String(config.url), false)),
+            config.data
+        ) : JSON.stringify(config.data);
 
         return {
             ...config,
@@ -80,7 +82,13 @@ function httpInit(instance: AxiosInstance): AxiosInstance {
         const cryptoIv =  await generateIv(await generateKey(String(url), false));
 
         if (Object.prototype.toLocaleString.call(data) === '[object Blob]') return data; // 二进制下载文件
-        const newData: {[key: string]: any} = response.headers.decrypt === 'true' ? await decrypt(cryptoKey, cryptoIv, data) : deepCopy(data);
+
+        const newData: {[key: string]: any} = window.isSecureContext && response.headers.decrypt === 'true' ? decrypt( // 是否满足解密条件
+            await generateKey(String(url)),
+            await generateIv(await generateKey(String(url), false)),
+            data
+        ) : deepCopy(data);
+
         if (typeOf(newData) !== 'object' || !headers?.pretreatment) return newData;
 
         if (newData.code === 0) { // 去登录，错误提示、异常抛出由后续流程继续处理
